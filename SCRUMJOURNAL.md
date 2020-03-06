@@ -4,6 +4,7 @@ sp20-cmpe-202-sec-49-team-project-kickinchickens created by GitHub Classroom
 Meeting 1: Wednesday March 4, 2020
 
 Participants: Raymond Ho, Jed Villanueva, Ramya Kandasamy
+
 Discussion Topics & Action Items:
 
 - High level overview of the project and project requirements
