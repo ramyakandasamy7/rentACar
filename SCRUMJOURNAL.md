@@ -12,3 +12,11 @@ Discussion Topics & Action Items:
   - Architecture Diagram on AWS (Ramya)
   - UML Deployment and Relationship Diagram (Raymond)
   - Set up of google doc for burndown sheets and task breakdown
+  
+  Raymond:
+  Jed:
+  Ramya: 
+  
+  Meeting 2: Wednesday March 11, 2020
+  
+  
