@@ -1,6 +1,7 @@
 # sp20-cmpe-202-sec-49-team-project-kickinchickens
 sp20-cmpe-202-sec-49-team-project-kickinchickens created by GitHub Classroom
 
+
 Meeting 1: Wednesday March 4, 2020
 
 Participants: Raymond Ho, Jed Villanueva, Ramya Kandasamy
@@ -17,6 +18,18 @@ Discussion Topics & Action Items:
   Jed:
   Ramya: 
   
-  Meeting 2: Wednesday March 11, 2020
+Meeting 2: Wednesday March 11, 2020
+
+Participants: Raymond Ho, Jed Villanueva, Ramya Kandasamy
+
+Discussion Topics & Action Items:
+- We broke down the tasks and DB requirements for RENTAL App
+- Focus is on the user story for API functionality: DB's that need to be created & creation of Node.js API
+  - DB's include:
+  
+  Raymond:
+  Jed:
+  Ramya: 
+
   
   
