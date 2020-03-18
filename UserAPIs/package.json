@@ -1,0 +1,15 @@
+{
+  "name": "userapi",
+  "version": "1.0.0",
+  "description": "Car rental project User/Customer API",
+  "main": "userAPI.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jed Villanueva",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1"
+  }
+}
