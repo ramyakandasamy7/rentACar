@@ -44,7 +44,7 @@ carRouter.get("/getallcars", (req, res) => {
     res.send(requests);
   });
 });
-//API to create car
+
 function calculateCost(type) {
   if (type.toString() == "sedan") {
     return 50;
@@ -54,11 +54,13 @@ function calculateCost(type) {
     return 25;
   }
 }
+
+//API to create car
 carRouter.post("/createcar", (req, res) => {
   var carID = Math.random()
     .toString(36)
     .substr(2, 9);
-  var cost = calculateCost(req.body.type.toString());
+  var cost = calculateCost(req.body.type);
   var paramsAdd = {
     TableName: "carInventoryDB",
     Item: {
@@ -137,7 +139,7 @@ carRouter.post("/deletecar", (req, res) => {
         error: "unable to delete car " + req.body.ID + " error is:" + err
       });
     } else {
-      return res.status(200).json({ message: req.body.ID + "gym deleted" });
+      return res.status(200).json({ message: req.body.ID + "car deleted" });
     }
   });
 });
