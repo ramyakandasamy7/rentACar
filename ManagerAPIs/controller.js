@@ -8,16 +8,17 @@ exports.showhome = function(req, res) {
 };
 
 exports.getManager = function(req, res) {
-    var requests = [];
     var params = {
-        TableName: "testManager",
+        TableName: "CarRentalManagers",
     };
     docClient.scan(params, (err, data) => {
-        data.Items.forEach(function(item){
-            requests.push(item);
-        });
-        console.log(requests);
-        res.send(requests)
+        if (err) {
+	    res.send(err);
+	} else {
+	    console.log(data);
+	    res.status(200);
+	    res.json(data);
+	}
     });
 }
 
