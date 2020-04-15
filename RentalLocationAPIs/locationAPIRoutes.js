@@ -8,18 +8,18 @@ let awsConfig = {
   region: "us-east-1",
   endpoint: "http://dynamodb.us-east-1.amazonaws.com",
   accessKeyId: "AKIAJR7XNR2MZH2QAPZQ",
-  secretAccessKey: "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"
+  secretAccessKey: "9Qh5CCk3SZytH6Ti5YImtw3lwKhc7zjsLdRBXfbs",
 };
 AWS.config.update(awsConfig);
 let docClient = new AWS.DynamoDB.DocumentClient();
 //get all locations
 rentalRouter.get("/locations", (req, res) => {
   var params = {
-    TableName: "rentalLocationDB"
+    TableName: "rentalLocationDB",
   };
   var requests = [];
   docClient.scan(params, (err, data) => {
-    data.Items.forEach(function(item) {
+    data.Items.forEach(function (item) {
       console.log(item);
       requests.push(item);
     });
@@ -28,14 +28,14 @@ rentalRouter.get("/locations", (req, res) => {
 });
 
 //get by ID
-rentalRouter.get("/getlocation", (req, res) => {
+rentalRouter.get("/getlocationbyID", (req, res) => {
   var params = {
     TableName: "rentalLocationDB",
     Key: {
-      ID: req.body.ID
-    }
+      ID: req.body.ID,
+    },
   };
-  docClient.get(params, function(err, data) {
+  docClient.get(params, function (err, data) {
     if (err) {
       console.log("error -" + JSON.stringify(err, null, 2));
     } else {
@@ -44,26 +44,55 @@ rentalRouter.get("/getlocation", (req, res) => {
     }
   });
 });
+
+rentalRouter.post("/getlocationbyCity", (req, res) => {
+  var city = req.body.city;
+  var state = req.body.state;
+  console.log(city);
+  console.log(state);
+  var params = {
+    TableName: "rentalLocationDB",
+
+    FilterExpression: "city = :city AND #s = :state",
+    ExpressionAttributeNames: {
+      "#s": "state",
+    },
+
+    ExpressionAttributeValues: {
+      ":city": city,
+      ":state": state,
+    },
+  };
+  docClient.scan(params, function (err, data) {
+    if (err) {
+      res.send(err);
+      console.log(err, err.stack);
+    } else {
+      res.json(data);
+      console.log(data);
+    }
+  });
+});
 //create a rental location
 rentalRouter.post("/createrentallocation", (req, res) => {
-  var rentalID = Math.random()
-    .toString(36)
-    .substr(2, 9);
+  var rentalID = Math.random().toString(36).substr(2, 9);
 
   var params = {
     TableName: "rentalLocationDB",
     Item: {
       ID: rentalID,
-      address: req.body.address,
-      name: req.body.name
-    }
+      city: req.body.city,
+      state: req.body.state,
+      street: req.body.street,
+      name: req.body.name,
+    },
   };
-  docClient.put(params, function(err, data) {
+  docClient.put(params, function (err, data) {
     if (err) {
       return res.status(400).json({ error: err });
     } else {
       return res.status(200).json({
-        message: "Rental Location added" + rentalID
+        message: "Rental Location added" + rentalID,
       });
     }
   });
@@ -73,23 +102,23 @@ rentalRouter.post("/updatelocation", (req, res) => {
   var paramsModify = {
     TableName: "rentalLocationDB",
     Key: {
-      ID: req.body.ID
+      ID: req.body.ID,
     },
     UpdateExpression: " set address=:x, #nameRental=:y",
     ExpressionAttributeValues: {
       ":x": req.body.address,
-      ":y": req.body.name
+      ":y": req.body.name,
     },
     ExpressionAttributeNames: {
-      "#nameRental": "name"
+      "#nameRental": "name",
     },
-    ReturnValues: "UPDATED_NEW"
+    ReturnValues: "UPDATED_NEW",
   };
-  docClient.update(paramsModify, function(err, data) {
+  docClient.update(paramsModify, function (err, data) {
     if (err) {
       return res.status(400).json({
         message:
-          "unable to modify rental location " + req.body.ID + "error is " + err
+          "unable to modify rental location " + req.body.ID + "error is " + err,
       });
     } else {
       return res.status(200).json({ message: req.body.ID + "updated" });
@@ -101,14 +130,17 @@ rentalRouter.post("/deletecar", (req, res) => {
   var paramsDelete = {
     TableName: "rentalLocationDB",
     Key: {
-      ID: req.body.ID
-    }
+      ID: req.body.ID,
+    },
   };
   docClient.delete(paramsDelete, (err, data) => {
     if (err) {
       return res.status(400).json({
         error:
-          "unable to delete rental location " + req.body.ID + " error is:" + err
+          "unable to delete rental location " +
+          req.body.ID +
+          " error is:" +
+          err,
       });
     } else {
       return res
