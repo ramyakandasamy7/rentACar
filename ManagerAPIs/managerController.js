@@ -1,7 +1,8 @@
 'use strict';
-var express = require('express')
-var DynamoDB = require('aws-sdk/clients/dynamodb'); 
-var docClient = new DynamoDB.DocumentClient({region: 'us-east-1'});
+var express    = require('express')
+var DynamoDB   = require('aws-sdk/clients/dynamodb'); 
+var docClient  = new DynamoDB.DocumentClient({region: 'us-east-1'});
+var TABLE_NAME = "CarRentalManagers";
 
 exports.showhome = function(req, res) {
     res.render('index');
@@ -9,7 +10,7 @@ exports.showhome = function(req, res) {
 
 exports.getManager = function(req, res) {
     var params = {
-        TableName: "CarRentalManagers",
+        TableName: TABLE_NAME,
     };
     docClient.scan(params, (err, data) => {
         if (err) {
@@ -22,10 +23,30 @@ exports.getManager = function(req, res) {
     });
 }
 
+exports.authenticateManager = function(req, res) {
+	var params = {
+		TableName: TABLE_NAME,
+		IndexName: 'email-index',
+		KeyConditionExpression: "email = :e",
+		ExpressionAttributeValues: {
+			":e": req.body.email
+		}
+	};
+	docClient.query(params, function(err, data) {
+		if (err) {
+			res.send(err);
+		} else {
+			console.log(data);
+			res.status(200);
+			res.json(data.Items[0]);
+		}
+	});
+}
+
 exports.createManager = function(req, res) {
     var ID = Math.random().toString(36).substr(2,9);
     var params = {
-        TableName: "testManager",
+        TableName: TABLE_NAME,
         Item: {
             managerId: ID,
             name: req.body.name,
@@ -45,7 +66,7 @@ exports.createManager = function(req, res) {
 
 exports.updateManager = function(req, res) {
     var params = {
-        TableName: "testManager",
+        TableName: TABLE_NAME,
         Key: {
           ID: req.body.managerId
         },
@@ -67,7 +88,7 @@ exports.updateManager = function(req, res) {
 
 exports.deleteManager = function(req, res) {
     var params = {
-        TableName: "testManager",
+        TableName: TABLE_NAME,
         Key: {
             managerId: req.body.id
         }
