@@ -54,24 +54,46 @@ exports.addACar = function(req, res) {
 
 }
 
-exports.updateManager = function(req, res) {
+exports.updateACar = function(req, res) {
+    console.log(req.body);
     var params = {
         TableName: TABLE_NAME,
         Key: {
-          ID: req.body.managerId
+          "ID": req.body.id
         },
         UpdateExpression:
-          "set name=:name, locationid=:location",
+          "set #mak=:mak, #mod=:mod, #yr=:yr, #typ=:typ, #cond=:cond, #locat=:locat, #regi=:licensePl, #mile=:mile, #lastServ=:lastService",
         ExpressionAttributeValues: {
-          ":name": req.body.name,
-          ":location": req.body.location,
-        }
+          ":mak":         req.body.make,
+          ":mod":         req.body.model,
+          ":yr":          req.body.year,
+          ":typ":         req.body.type,
+          ":cond":        req.body.condition,
+          ":locat":       req.body.locationId,
+          ":licensePl":   req.body.licensePlate,
+          ":mile":        req.body.mileage,
+          ":lastService": req.body.lastServiced,
+        },
+	ExpressionAttributeNames: {
+		"#mak":      "make",
+		"#mod":      "model",
+		"#yr":       "year",
+		"#typ":      "type",
+		"#cond":     "condition",
+		"#locat":    "locationID",
+		"#regi":     "registrationID",
+		"#mile":     "mileage",
+		"#lastServ": "lastServiced",
+
+	}
       };
       docClient.update(params, function(err, data) {
         if (err) {
-          return err
+	  console.log(err);
+          res.send(err)
         } else {
-          return data;
+          res.status(200);
+          res.json(data);
         }
       });
 }

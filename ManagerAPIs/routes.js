@@ -29,7 +29,12 @@ module.exports = function(app) {
 	.get(lot.getAllLocations)
 	.post(lot.addALocation);
 
+    app.route("/location/:locationId")
+	.delete(lot.deleteALocation);
+
     app.route("/inventory")
 	.get(car.getAllCars)
+	.put(car.updateACar)
 	.post(car.addACar);
+
 }

@@ -56,41 +56,48 @@ exports.addALocation = function(req, res) {
 
 }
 
-exports.updateManager = function(req, res) {
-    var params = {
-        TableName: TABLE_NAME,
-        Key: {
-          ID: req.body.managerId
-        },
-        UpdateExpression:
-          "set name=:name, locationid=:location",
-        ExpressionAttributeValues: {
-          ":name": req.body.name,
-          ":location": req.body.location,
-        }
-      };
-      docClient.update(params, function(err, data) {
-        if (err) {
-          return err
-        } else {
-          return data;
-        }
-      });
+exports.updateALocation = function(req, res) {
+    console.log(req.body);
+    console.log(req.query);
+    console.log(req.params);
+    //var params = {
+    //    TableName: TABLE_NAME,
+    //    Key: {
+    //      ID: req.body.managerId
+    //    },
+    //    UpdateExpression:
+    //      "set name=:name, locationid=:location",
+    //    ExpressionAttributeValues: {
+    //      ":name": req.body.name,
+    //      ":location": req.body.location,
+    //    }
+    //  };
+    //  docClient.update(params, function(err, data) {
+    //    if (err) {
+    //      return err
+    //    } else {
+    //      return data;
+    //    }
+    //  });
 }
 
-exports.deleteManager = function(req, res) {
+exports.deleteALocation = function(req, res) {
+    console.log(req.body);
+    console.log(req.query);
+    console.log(req.params);
     var params = {
         TableName: TABLE_NAME,
         Key: {
-            managerId: req.body.id
+            ID: req.params.locationId
         }
     };
     docClient.delete(params, (err, data) => {
         if(err) {
-            return err;
+            res.send(err);
         }
         else {
-            return data;
+            res.status(200);
+	    res.json({message: "OK"});
         }
     });
 
