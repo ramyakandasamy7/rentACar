@@ -13,14 +13,15 @@ function initUI() {
 	renderContainers();
 	renderNavigationBar();
 	renderContents();
-	getAllInventory();
+	getAllLocations();
+	//getAllInventory();
 	renderModal();
 }
 
 function renderContainers() {
 	$("#root").append(
 		"<nav class='navbar fixed-top navbar-dark bg-dark'>"
-			+"<a class='navbar-brand' href='#'>ByeBuyCheckout Inventory Dashboard</a>"
+			+"<a class='navbar-brand' href='#'>Rent-A-Car Admin Dashboard</a>"
 			+"<form class='form-inline' style='margin-block-end: 0;'>" 
 				+"<span class='text-white mr-4'>Hi "+userName+"</span>"
 				+"<button type='button' class='btn btn-danger btn-sm' onclick='logout();'>Logout</button>"
@@ -43,8 +44,11 @@ function renderNavigationBar() {
 			+"<h5>Navigation</h3>"
 			+"<div class='container'>"
 				+"<nav class='nav flex-column nav-pills'>"
-					+"<a data-toggle='tab' class='nav-link active' href='#main_location_content'>Location</a>"
-					+"<a data-toggle='tab' class='nav-link' href='#add_location_content'>Something Here</a>"
+					+"<a data-toggle='tab' class='nav-link active' href='#main_location_content'>Locations</a>"
+					+"<a data-toggle='tab' class='nav-link' href='#car_inventory_content'>Car Inventory</a>"
+					+"<a data-toggle='tab' class='nav-link' href='#users_content'>Users</a>"
+					+"<a data-toggle='tab' class='nav-link' href='#reservations_content'>Reservations</a>"
+					+"<a data-toggle='tab' class='nav-link' href='#transactions_content'>Transactions</a>"
 				+"</nav>"
 			+"</div>"
 		+"</div>"
@@ -60,15 +64,26 @@ function renderContents() {
 					+"<button type='button' class='btn btn-primary btn-sm mb-5' data-toggle='modal' data-target='#add_location_modal'>Add Location</button>"
 					+"<table class='table table-striped table-sm' id='location_table'></table>"
 				+"</div>"
-				+"<div class='tab-pane fade' id='add_location_content'>"
-					+"<h5>Add Store Inventory</h5>"
+				+"<div class='tab-pane fade' id='car_inventory_content'>"
+					+"<h2>Car Inventory</h2>"
+					+"<button type='button' class='btn btn-primary btn-sm mb-5' data-toggle='modal' data-target='#add_car_modal'>Add A Car</button>"
+					+"<table class='table table-striped table-sm' id='inventory_table'></table>"
+				+"</div>"
+				+"<div class='tab-pane fade' id='users_content'>"
+					+"<h2>User Accounts</h2>"
+				+"</div>"
+				+"<div class='tab-pane fade' id='reservations_content'>"
+					+"<h2>Active Reservations</h2>"
+				+"</div>"
+				+"<div class='tab-pane fade' id='transactions_content'>"
+					+"<h2>Transaction History</h2>"
 				+"</div>"
 			+"</div>"
 		+"</div>"
 	);
 }
 
-function renderInventoryTable(data) {
+function renderLocationTable(data) {
 	window.locationTable = $("#location_table").DataTable({
 		"pageLength": 50,
 		"data":data,
@@ -83,9 +98,64 @@ function renderInventoryTable(data) {
 			{ "title": "Sedan Price",       "data": "sedanPPH"           },
 			{ "title": "SUV Price",         "data": "suvPPH"             },
 			{ "title": "Truck Price",       "data": "truckPPH"           },
-			{ "title": "Luxury Price",      "data": "luxuryPPH"          },
+			{ "title": "Luxury Price",      "data": "luxuryPPH"          }
 		]
 	}); 
+}
+
+function renderInventoryTable(data) {
+	window.inventoryTable = $("#inventory_table").DataTable({
+		"pageLength": 50,
+		"data":data,
+		"columns": [
+			{ "title": "Make",          	"data": "make"               },
+			{ "title": "Model",       	"data": "model"              },
+			{ "title": "Year",          	"data": "year"               },
+			{ "title": "Type",         	"data": "type"               },
+			{ "title": "Location",  	"data": "locationID"         },
+			{ "title": "Condition",         "data": "condition"          },
+			{ "title": "Last Serviced",     "data": "lastServiced"       },
+			{ "title": "License Plate",     "data": "registrationID"     },
+			{ "title": "Current Miles",     "data": "mileage"            },
+			{ "title": "Options",           "data": "options"            }
+		]
+	}); 
+}
+
+function populateSelects() {
+	$.each(MAKES, function(key, value) {
+		$("#new_make").
+			append($("<option></option>")
+				.attr("value",value)
+				.text(value));
+	});
+	$.each(TYPES, function(key, value) {
+		$("#new_type").
+			append($("<option></option>")
+				.attr("value",value)
+				.text(value));
+	});
+	$.each(CONDITIONS, function(key, value) {
+		$("#new_condition").
+			append($("<option></option>")
+				.attr("value",value)
+				.text(value));
+	});
+	$.each(YEARS, function(key, value) {
+		$("#new_year").
+			append($("<option></option>")
+				.attr("value",value)
+				.text(value));
+	});
+}
+
+function populateLocationInput() {
+	$.each(LOCATIONS, function(key, value) {
+		$("#new_location").
+			append($("<option></option>")
+				.attr("value",value.ID)
+				.text(value.name));
+	});
 }
 
 function renderModal() {
@@ -174,6 +244,83 @@ function renderModal() {
 				+"</div>"
 			+"</div>"
 		+"</div>"
+		+"<div class='modal fade' id='add_car_modal' tabindex='-1' role='dialog' aria-labelledby='AddCarModal' aria-hidden='true'>"
+                        +"<div class='modal-dialog' role='document'>"
+                                +"<div class='modal-content'>"
+                                        +"<div class='modal-header'>"
+                                                +"<h5 class='modal-title'>Add A Car</h5>"
+                                                +"<button type='button' class='close' data-dismiss='modal' aria-label='Close'>"
+                                                        +"<span aria-hidden='true'>&times</span>"
+                                                +"</button>"
+                                        +"</div>"
+                                        +"<div class='modal-body'>"
+						+"<div class='input-group input-group-sm mb-3'>"
+                                                        +"<div class='input-group-prepend'>"
+                                                                +"<span class='input-group-text'>Lot Assignment</span>"
+                                                        +"</div>"
+							+"<select class='form-control' id='new_location'>"
+							+"</select>"
+                                                +"</div>"
+						+"<div class='input-group input-group-sm mb-3'>"
+                                                        +"<div class='input-group-prepend'>"
+                                                                +"<span class='input-group-text'>Car Type</span>"
+                                                        +"</div>"
+							+"<select class='form-control' id='new_type'>"
+							+"</select>"
+                                                +"</div>"
+						+"<div class='input-group input-group-sm mb-3'>"
+                                                        +"<div class='input-group-prepend'>"
+                                                                +"<span class='input-group-text'>Condition</span>"
+                                                        +"</div>"
+							+"<select class='form-control' id='new_condition'>"
+							+"</select>"
+                                                +"</div>"
+						+"<div class='input-group input-group-sm mb-3'>"
+                                                        +"<div class='input-group-prepend'>"
+                                                                +"<span class='input-group-text'>Year</span>"
+                                                        +"</div>"
+							+"<select class='form-control' id='new_year'>"
+							+"</select>"
+                                                +"</div>"
+						+"<div class='input-group input-group-sm mb-3'>"
+                                                        +"<div class='input-group-prepend'>"
+                                                                +"<span class='input-group-text'>Make</span>"
+                                                        +"</div>"
+							+"<select class='form-control' id='new_make'>"
+							+"</select>"
+                                                +"</div>"
+						+"<div class='input-group input-group-sm mb-3'>"
+                                                        +"<div class='input-group-prepend'>"
+                                                                +"<span class='input-group-text'>Model</span>"
+                                                        +"</div>"
+                                                        +"<input type='text' id='new_model' class='form-control' aria-label='Car Model' aria-describedby='Car Model' value='Camry'>"
+                                                +"</div>"
+						+"<div class='input-group input-group-sm mb-3'>"
+                                                        +"<div class='input-group-prepend'>"
+                                                                +"<span class='input-group-text'>Mileage</span>"
+                                                        +"</div>"
+                                                        +"<input type='text' id='new_mileage' class='form-control' aria-label='Car Mileage' aria-describedby='Car Mileage' value='5932'>"
+                                                +"</div>"
+						+"<div class='input-group input-group-sm mb-3'>"
+                                                        +"<div class='input-group-prepend'>"
+                                                                +"<span class='input-group-text'>License Plate #</span>"
+                                                        +"</div>"
+                                                        +"<input type='text' id='new_license' class='form-control' aria-label='Car License Plate #' aria-describedby='Car License Plate #' value='9XVX123'>"
+                                                +"</div>"
+						+"<div class='input-group input-group-sm mb-3 date' id='datetimepicker'>"
+                                                        +"<div class='input-group-prepend'>"
+                                                                +"<span class='input-group-text'>Last Serviced</span>"
+                                                        +"</div>"
+                                                        +"<input type='date' id='new_service' class='form-control' aria-label='Last Serviced' aria-describedby='Last Serviced'>"
+                                                +"</div>"
+                                        +"</div>"
+                                        +"<div class='modal-footer'>"
+						+"<button type='button' class='btn btn-primary btn-sm' onclick='addCar();'>Add</button>"
+						+"<button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Close</button>"
+                                        +"</div>"
+                                +"</div>"
+                        +"</div>"
+                +"</div>"
 	);
+	populateSelects();
 }
-

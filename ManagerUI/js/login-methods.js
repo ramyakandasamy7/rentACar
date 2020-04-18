@@ -7,7 +7,7 @@ function login() {
 	console.log(u);
 	console.log(p);
 	$.ajax({
-		url: MGMT_USER_API+"manager",
+		url: MANAGER_API+"manager",
 		type: 'POST',
 		data: {email: u, password: p}
 	}).done(function(data) {
