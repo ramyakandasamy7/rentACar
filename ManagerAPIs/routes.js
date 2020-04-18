@@ -2,6 +2,7 @@
 module.exports = function(app) {
     var manager        = require('./managerController');
     var lot            = require('./locationController');
+    var car            = require('./inventoryController');
     var bodyParser     = require('body-parser');
     var methodOverride = require('method-override');
 
@@ -27,4 +28,8 @@ module.exports = function(app) {
     app.route("/location")
 	.get(lot.getAllLocations)
 	.post(lot.addALocation);
+
+    app.route("/inventory")
+	.get(car.getAllCars)
+	.post(car.addACar);
 }
