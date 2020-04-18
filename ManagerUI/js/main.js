@@ -41,6 +41,60 @@ var CONDITIONS = [
 	"Service"
 ];
 
+function populateYears(elId) {
+	$.each(YEARS, function(key, value) {
+                $("#"+elId).
+                        append($("<option></option>")
+                                .attr("value",value)
+                                .text(value));
+        });
+}
+
+function populateMakes(elId) {
+	$.each(MAKES, function(key, value) {
+                $("#"+elId).
+                        append($("<option></option>")
+                                .attr("value",value)
+                                .text(value));
+        });
+}
+
+function populateTypes(elId) {
+	$.each(TYPES, function(key, value) {
+                $("#"+elId).
+                        append($("<option></option>")
+                                .attr("value",value)
+                                .text(value));
+        });
+}
+
+function populateConditions(elId) {
+	$.each(CONDITIONS, function(key, value) {
+                $("#"+elId).
+                        append($("<option></option>")
+                                .attr("value",value)
+                                .text(value));
+        });
+}
+
+function populateLocations(elId) {
+	console.log(LOCATIONS);
+        $.each(window.LOCATIONS, function(key, value) {
+                $("#"+elId).
+                        append($("<option></option>")
+                                .attr("value",value.ID)
+                                .text(value.name));
+        });
+}
+
+function populateSelects() {
+	populateYears("new_year");
+        populateMakes("new_make");
+        populateTypes("new_type");
+        populateConditions("new_condition");
+        populateLocations("new_location");
+}
+
 function setUserInfo(email, name, id, storeId) {
 	localStorage.setItem("email",  email);
 	localStorage.setItem("name",   name);

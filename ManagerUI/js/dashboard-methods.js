@@ -1,5 +1,6 @@
 var CARS = null;
 var LOCATIONS = null;
+var LOC_NAMES = {};
 
 
 function getAllLocations() {
@@ -10,8 +11,18 @@ function getAllLocations() {
 	}).done(function(data) {
 		console.log(data.Items);
 		window.LOCATIONS = data.Items;
-		populateLocationInput();
-		getAllInventory();
+		for (i = 0; i < LOCATIONS.length; i++) {
+			let id      = LOCATIONS[i].ID;
+			let name    = LOCATIONS[i].name;
+			let delbtn  = "<a href='#' class='text-danger ml-1' onclick='deleteLocation(\""+id+"\");' title='Delete Location'><i class='fas fa-trash fa-lg'></i></a>"; 
+			let editbtn = "<a href='#' class='text-primary mr-1' onclick='editLocation(\""+id+"\");' data-toggle='modal' data-taret='#edit_modal' title='Edit Location Info'><i class='fas fa-edit fa-lg'></i></a>"; 
+			LOCATIONS[i].options = editbtn + delbtn;
+			LOC_NAMES[id] = name;
+		}
+		populateLocations("new_location");
+		if (CARS === null) {
+			getAllInventory();
+		}
 		renderLocationTable(data.Items);
 	});	
 }
@@ -28,9 +39,19 @@ function getAllInventory() {
 		countCarsPerLocation();
 		for (i = 0; i < CARS.length; i++) {
 			let id      = CARS[i].ID;
-			let delbtn  = "<a href='#' class='text-danger ml-1' onclick='deleteCar(\""+id+"\");' title='Delete Car'><i class='fas fa-trash'></i></a>"; 
-			let editbtn = "<a href='#' class='text-primary mr-1' onclick='editCar(\""+id+"\");' title='Edit Car Info'><i class='fas fa-edit'></i></a>"; 
+			let locId   = CARS[i].locationID;
+			let delbtn  = "<a href='#' class='text-danger ml-1' onclick='deleteCar(\""+id+"\");' title='Delete Car'><i class='fas fa-trash fa-lg'></i></a>"; 
+			let editbtn = "<a href='#' class='text-primary mr-1' onclick='editCar(\""+id+"\");' data-toggle='modal' data-target='#edit_modal' title='Edit Car Info'><i class='fas fa-edit fa-lg'></i></a>"; 
+			CARS[i].locationName = "";
 			CARS[i].options = editbtn + delbtn;
+			for (x in LOC_NAMES) {
+				if (locId === x) {
+					CARS[i].locationName = LOC_NAMES[x];
+				}
+			}
+			if (CARS[i].locationName === "") {
+				CARS[i].locationName = "<span class='text-danger'>Not Assigned</span>";
+			}
 		}
 		renderInventoryTable(CARS);
 	});	
@@ -101,6 +122,22 @@ function addLocation() {
 
 }
 
+function deleteLocation(id) {
+	let confirmDelete = confirm("Are you really sure you want to remove this location from the database?");
+
+	if (confirmDelete === true) {
+		$.ajax({
+			url: MANAGER_API+"location/"+id,
+			type: "DELETE"
+		}).done(function(data, stat, statCode) {
+			console.log(data);
+			console.log(stat);
+			console.log(statCode);
+			updateLocationTable();
+		});
+	}
+}
+
 function addCar() {
 	let make  = $('#new_make').children("option:selected").val();
 	let model = $('#new_model').val();
@@ -132,4 +169,126 @@ function addCar() {
 		console.log(statCode);
 		updateInventoryTable();
 	});
+}
+
+function sendCarEdit(id) {
+	let make  = $('#edit_make').children("option:selected").val();
+	let model = $('#edit_model').val();
+	let year  = $('#edit_year').children("option:selected").val();
+	let type  = $('#edit_type').children("option:selected").val();
+	let cond  = $('#edit_condition').children("option:selected").val();
+	let locat = $('#edit_location').val();
+	let lic   = $('#edit_license').val();
+	let miles = $('#edit_mileage').val();
+	let serv  = $('#edit_service').val();
+
+	console.log(make);
+
+	$.ajax({
+		url: MANAGER_API+"inventory",
+		type: "PUT",
+		data: {
+			id:id,
+			make: make,
+			model: model,
+			year: year,
+			type: type,
+			condition: cond,
+			locationId: locat,
+			licensePlate: lic,
+			mileage: miles,
+			lastServiced: serv
+		},
+	}).done(function(data, stat, statCode) {
+		console.log(statCode);
+		updateInventoryTable();
+	});
+}
+
+function editCar(id) {
+	let carI = CARS.find(x => x.ID === id);
+	console.log(carI);
+	$("#edit_body").empty();
+	$("#edit_footer").empty();
+	$("#edit_body").append(
+		"<div class='input-group input-group-sm mb-3'>"
+                        +"<div class='input-group-prepend'>"
+                                +"<span class='input-group-text'>Lot Assignment</span>"
+                        +"</div>"
+                        +"<select class='form-control' id='edit_location'>"
+                        +"</select>"
+                +"</div>"
+                +"<div class='input-group input-group-sm mb-3'>"
+                        +"<div class='input-group-prepend'>"
+                                +"<span class='input-group-text'>Car Type</span>"
+                        +"</div>"
+                        +"<select class='form-control' id='edit_type'>"
+                        +"</select>"
+                +"</div>"
+                +"<div class='input-group input-group-sm mb-3'>"
+                        +"<div class='input-group-prepend'>"
+                                +"<span class='input-group-text'>Condition</span>"
+                        +"</div>"
+                        +"<select class='form-control' id='edit_condition'>"
+                        +"</select>"
+                +"</div>"
+                +"<div class='input-group input-group-sm mb-3'>"
+                        +"<div class='input-group-prepend'>"
+                                +"<span class='input-group-text'>Year</span>"
+                        +"</div>"
+                        +"<select class='form-control' id='edit_year'>"
+                        +"</select>"
+                +"</div>"
+                +"<div class='input-group input-group-sm mb-3'>"
+                        +"<div class='input-group-prepend'>"
+                                +"<span class='input-group-text'>Make</span>"
+                        +"</div>"
+                        +"<select class='form-control' id='edit_make'>"
+                        +"</select>"
+                +"</div>"
+                +"<div class='input-group input-group-sm mb-3'>"
+                        +"<div class='input-group-prepend'>"
+                                +"<span class='input-group-text'>Model</span>"
+                        +"</div>"
+                        +"<input type='text' id='edit_model' class='form-control' aria-label='Car Model' aria-describedby='Car Model'>"
+                +"</div>"
+                +"<div class='input-group input-group-sm mb-3'>"
+                        +"<div class='input-group-prepend'>"
+                                +"<span class='input-group-text'>Mileage</span>"
+                        +"</div>"
+                        +"<input type='text' id='edit_mileage' class='form-control' aria-label='Car Mileage' aria-describedby='Car Mileage'>"
+                +"</div>"
+                +"<div class='input-group input-group-sm mb-3'>"
+                        +"<div class='input-group-prepend'>"
+                                +"<span class='input-group-text'>License Plate #</span>"
+                        +"</div>"
+                        +"<input type='text' id='edit_license' class='form-control' aria-label='Car License Plate #' aria-describedby='Car License Plate #'>"
+                +"</div>"
+		+"<div class='input-group input-group-sm mb-3 date' id='datetimepicker'>"
+                        +"<div class='input-group-prepend'>"
+                                +"<span class='input-group-text'>Last Serviced</span>"
+                        +"</div>"
+                        +"<input type='date' id='edit_service' class='form-control' aria-label='Last Serviced' aria-describedby='Last Serviced'>"
+                +"</div>"
+        );
+	$("#edit_footer").append(
+		"<button type='button' class='btn btn-primary btn-sm' onclick='sendCarEdit(\""+carI.ID+"\");'>Save</button>"
+                +"<button type='button' class='btn btn-danger btn-sm' data-dismiss='modal'>Cancel</button>"
+	);
+
+	populateYears("edit_year");
+        populateMakes("edit_make");
+        populateTypes("edit_type");
+        populateConditions("edit_condition");
+        populateLocations("edit_location");
+
+	$("#edit_model").val(carI.model).text(carI.model);
+	$("#edit_mileage").val(carI.mileage).text(carI.mileage);
+	$("#edit_license").val(carI.registrationID).text(carI.registrationID);
+	$("#edit_service").val(carI.lastServiced);
+	$("#edit_year").find("option[value='"+carI.year+"']").attr("selected",true);
+	$("#edit_make").find("option[value='"+carI.make+"']").attr("selected",true);
+	$("#edit_type").find("option[value='"+carI.type+"']").attr("selected",true);
+	$("#edit_location").find("option[value='"+carI.locationID+"']").attr("selected",true);
+	$("#edit_condition").find("option[value='"+carI.condition+"']").attr("selected",true);
 }
