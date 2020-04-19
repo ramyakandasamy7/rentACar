@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-compatible" content="ie-edge">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+    <!--<script src="https://momentjs.com/downloads/moment.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.css">-->
+
+    <title>Title</title>
+</head>
+<body>
+    <!--<div class="container">
+        <div class="row">
+            <div class='col-sm-6'>
+                <div class="form-group">
+                    <div class='input-group date' id='datetimepicker5'>
+                        <input type='text' class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <script type="text/javascript">
+                $(function () {
+                    $('#datetimepicker5').datetimepicker({
+                        defaultDate: Date.now(),
+                        disabledDates: [
+                            moment("4/25/2020"),
+                            new Date(2020, 4 - 1, 27),
+                            "4/22/2020 00:53"
+                        ]
+                    });
+                });
+            </script>
+        </div>
+    </div>-->
+    <table class="table table-striped table-hover" style="margin-top:100px;margin-left:10%; margin-right:10%;width:1000px;">
+        <thead style="background-color:rgb(0,200,200)"> 
+            <tr>
+                <td>CAR</td>
+                <td>LOCATION</td>
+                <td>USER</td>
+                <td>PRICE</td>
+                <td>STATUS</td>
+                <td>ACTION</td>
+            </tr>
+        </thead>
+    <% for(var i = 0; i < requests.length;i++) {%>
+        <tr>
+            <td><%=requests[i].carID%></td>
+            <td><%=requests[i].locationID%></td>
+            <td><%=requests[i].userID%></td>
+            <td><%=requests[i].price%></td>
+            <td><%=requests[i].field%></td>
+            <td>
+                <% if(requests[i].field == 'RESERVED') { %>
+                    <form method="POST" action="/cancelReservation">
+                        <input type="hidden" id="Id" name="Id" value=<%=requests[i].ID%>>
+                        <input type="hidden" id="userID" name="userID" value=<%=requests[i].userID%>>
+                        <input type="submit" value="CANCEL RESERVATION">
+                    </form>
+                <% } else if(requests[i].field == 'IN-USE') { %>
+                    <form method="POST" action="/returnVehicle">
+                        <input type="hidden" id="Id" name="Id" value=<%=requests[i].ID%>>
+                        <input type="hidden" id="userID" name="userID" value=<%=requests[i].userID%>>
+                        <input type="submit" value="RETURN VEHICLE">
+                    </form>
+                        ><% } else {%>
+                            <div>NO ACTIONS</div>
+                        <%} %>
+            </td>
+        </tr>
+        <% } %>
+    </table>
+</body>
+</html>

@@ -7,6 +7,30 @@ exports.showhome = function(req, res) {
     res.render('index');
 };
 
+exports.showhistory = function(req,res) {
+    var requests = [];
+    var params = {
+        TableName: "rentalTransactionDB",
+        IndexName: "userID-index",
+		KeyConditionExpression: "#i = :i",
+		ExpressionAttributeNames: {
+			"#i" : "userID"
+		},
+		ExpressionAttributeValues: {
+			":i": '12345'
+		}
+    };
+    docClient.query(params, (err, data) => {
+        console.log(err);
+        data.Items.forEach(function(item){
+            requests.push(item);
+        });
+        console.log(requests);
+        res.render('history', {"requests":requests})
+        //res.send(requests)
+    });
+}
+
 exports.getRental = function(req, res) {
     var requests = [];
     var params = {
@@ -19,6 +43,82 @@ exports.getRental = function(req, res) {
         console.log(requests);
         res.send(requests)
     });
+}
+
+exports.cancelReservation = function(req, res) {
+    console.log("HELLO");
+    console.log(req.body.Id);
+    console.log(req.body.userID);
+    var requests = [];
+    var params = {
+        TableName: "rentalTransactionDB",
+        Key: {
+          'ID': req.body.Id,
+          'userID': req.body.userID
+        },
+        UpdateExpression:
+          "set field = :status",  
+        ExpressionAttributeValues: {
+          ":status": 'CANCELLED',
+        }
+      };
+      docClient.update(params, function(err, data) {
+        if (err) {
+            console.log(err);
+          return err;
+        } else {
+            console.log(data);
+            res.redirect('/history');
+            
+          return data
+        }
+      });
+}
+
+exports.returnVehicle = function(req, res) {
+    console.log(req.body.Id);
+    var requests = [];
+    var params = {
+        TableName: "rentalTransactionDB",
+        Key: {
+          ID: req.body.Id,
+          'userID': req.body.userID
+        },
+        UpdateExpression:
+          "set field = :status",  
+        ExpressionAttributeValues: {
+          ":status": 'RETURNED',
+        }
+      };
+      docClient.update(params, function(err, data) {
+        if (err) {
+            console.log(err);
+          return err;
+        } else {
+            params = {
+                TableName: "rentalTransactionDB",
+                IndexName: "userID-index",
+                KeyConditionExpression: "#i = :i",
+                ExpressionAttributeNames: {
+                    "#i" : "userID"
+                },
+                ExpressionAttributeValues: {
+                    ":i": '12345'
+                }
+            };
+            docClient.query(params, (err, data) => {
+                console.log(err);
+                data.Items.forEach(function(item){
+                    requests.push(item);
+                });
+                console.log(requests);
+                res.render('history', {"requests":requests})
+                //res.send(requests)
+            });
+            console.log(data);
+          return data
+        }
+      });
 }
 
 exports.createRental = function(req, res) {

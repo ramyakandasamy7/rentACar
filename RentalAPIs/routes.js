@@ -12,6 +12,12 @@ module.exports = function(app) {
 
     app.route("/")
         .get(controller.showhome);
+    app.route("/history")
+        .get(controller.showhistory);
+    app.route("/cancelReservation")
+        .post(controller.cancelReservation);
+        app.route("/returnVehicle")
+        .post(controller.returnVehicle);
     app.route("/rental")
         .get(controller.getRental);
     app.route("/deleterental")
