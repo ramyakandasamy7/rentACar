@@ -1,9 +1,9 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const carAPI = require("./carAPIRoutes");
 app.use(cors());
+var carAPI = require("./CarAPIRoutes");
 app.use(carAPI);
-app.listen(3000, function() {
-  console.log("Listening on port 3000");
+app.listen(9000, function () {
+  console.log("Listening on port 9000");
 });

@@ -18,7 +18,7 @@ function renderForm() {
 		"<div class='card m-auto' style='width: 300px;'>"
 			+"<div class='card-body'>"
 				+"<h4 class='card-title text-center'>Management Sign In</h4>"
-				+"<input class='form-control mb-2' placeholder='Email' type='email' id='user' value='test@trentacar.com'>"
+				+"<input class='form-control mb-2' placeholder='Email' type='email' id='user' value='test@rentacar.com'>"
 				+"<input class='form-control mb-2' placeholder='Password' type='password' id='password' value='testpassword'>"
 				+"<button type='button' class='btn btn-primary' onclick='login()'>Login</button>"
 			+"</div>"

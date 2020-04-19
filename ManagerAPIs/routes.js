@@ -1,7 +1,9 @@
 'use strict';
 module.exports = function(app) {
-    var controller = require('./controller');
-    var bodyParser = require('body-parser');
+    var manager        = require('./managerController');
+    var lot            = require('./locationController');
+    var car            = require('./inventoryController');
+    var bodyParser     = require('body-parser');
     var methodOverride = require('method-override');
 
     var express = require('express');
@@ -11,11 +13,29 @@ module.exports = function(app) {
     app.set('view engine', 'ejs');
 
     app.route("/")
-        .get(controller.showhome);
+        .get(manager.showhome);
+
     app.route("/manager")
-        .get(controller.getManager);
+        .get(manager.getManager)
+	.post(manager.authenticateManager);
+
     app.route("/deletemanager")
-        .get(controller.deleteManager);
+        .get(manager.deleteManager);
+
     app.route("/updatemanager")
-        .get(controller.updateManager);
+        .get(manager.updateManager);
+
+    app.route("/location")
+	.get(lot.getAllLocations)
+	.post(lot.addALocation)
+	.put(lot.updateALocation);
+
+    app.route("/location/:locationId")
+	.delete(lot.deleteALocation);
+
+    app.route("/inventory")
+	.get(car.getAllCars)
+	.put(car.updateACar)
+	.post(car.addACar);
+
 }
