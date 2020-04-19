@@ -58,27 +58,47 @@ exports.addALocation = function(req, res) {
 
 exports.updateALocation = function(req, res) {
     console.log(req.body);
-    console.log(req.query);
-    console.log(req.params);
-    //var params = {
-    //    TableName: TABLE_NAME,
-    //    Key: {
-    //      ID: req.body.managerId
-    //    },
-    //    UpdateExpression:
-    //      "set name=:name, locationid=:location",
-    //    ExpressionAttributeValues: {
-    //      ":name": req.body.name,
-    //      ":location": req.body.location,
-    //    }
-    //  };
-    //  docClient.update(params, function(err, data) {
-    //    if (err) {
-    //      return err
-    //    } else {
-    //      return data;
-    //    }
-    //  });
+    var params = {
+        TableName: TABLE_NAME,
+        Key: {
+          "ID": req.body.id
+        },
+        UpdateExpression:
+          "set #nam=:nam, #addr=:addr, #ct=:ct, #st=:st, #cap=:cap, #comp=:comp, #seda=:seda, #su=:su, #truk=:truk, #lux=:lux",
+        ExpressionAttributeValues: {
+          ":nam":  req.body.name,
+          ":addr": req.body.address,
+          ":ct":   req.body.city,
+          ":st":   req.body.state,
+          ":cap":  req.body.capacity,
+          ":comp": req.body.compact,
+          ":seda": req.body.sedan,
+          ":su":   req.body.suv,
+          ":truk": req.body.truck,
+          ":lux":  req.body.luxury
+        },
+        ExpressionAttributeNames: {
+                "#nam":  "name",
+                "#addr": "address",
+                "#ct":   "city",
+                "#st":   "state",
+                "#cap":  "vehicleCapacity",
+                "#comp": "compactPPH",
+                "#seda": "sedanPPH",
+                "#su":   "suvPPH",
+                "#truk": "truckPPH",
+                "#lux":  "luxuryPPH"
+        }
+      };
+      docClient.update(params, function(err, data) {
+        if (err) {
+          console.log(err);
+          res.send(err)
+        } else {
+          res.status(200);
+          res.json(data);
+        }
+      });
 }
 
 exports.deleteALocation = function(req, res) {

@@ -27,7 +27,8 @@ module.exports = function(app) {
 
     app.route("/location")
 	.get(lot.getAllLocations)
-	.post(lot.addALocation);
+	.post(lot.addALocation)
+	.put(lot.updateALocation);
 
     app.route("/location/:locationId")
 	.delete(lot.deleteALocation);
