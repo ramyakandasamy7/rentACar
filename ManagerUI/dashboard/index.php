@@ -20,6 +20,11 @@ session_start();
 		<script src="../js/main.js?t=<?php echo time(); ?>"></script>
 		<script src="../js/dashboard-ui.js?t=<?php echo time(); ?>"></script>
 		<script src="../js/dashboard-methods.js?t=<?php echo time(); ?>"></script>
+		<script src="../js/users-methods.js?t=<?php echo time(); ?>"></script>
+		<script src="../js/locations-methods.js?t=<?php echo time(); ?>"></script>
+		<script src="../js/cars-methods.js?t=<?php echo time(); ?>"></script>
+		<script src="../js/reservations-methods.js?t=<?php echo time(); ?>"></script>
+		<script src="../js/transactions-methods.js?t=<?php echo time(); ?>"></script>
 		<script>
 			$(document).ready(function() {
 				initUI();

@@ -2,8 +2,11 @@ var userEmail = getUserEmail();
 var userName  = getUserName();
 var userId    = getUserId();
 
-var locationTable = "";
-var inventoryTable = "";
+var locationTable     = "";
+var inventoryTable    = "";
+var usersTable        = "";
+var reservationsTable = "";
+var transactionsTable = "";
 
 console.log(userEmail);
 console.log(userName);
@@ -16,6 +19,9 @@ function initUI() {
 	renderContents();
 	getAllLocations();
 	//getAllInventory();
+	getAllUsers();
+	getAllReservations();
+	getAllTransactions();
 	renderModal();
 }
 
@@ -71,13 +77,16 @@ function renderContents() {
 					+"<table class='table table-striped table-sm' id='inventory_table'></table>"
 				+"</div>"
 				+"<div class='tab-pane fade' id='users_content'>"
-					+"<h2>User Accounts</h2>"
+					+"<h2 style='margin-bottom: 40px;'>User Accounts</h2>"
+					+"<table class='table table-striped table-sm' id='users_table'></table>"
 				+"</div>"
 				+"<div class='tab-pane fade' id='reservations_content'>"
-					+"<h2>Active Reservations</h2>"
+					+"<h2 style='margin-bottom: 40px;'>Active Reservations</h2>"
+					+"<table class='table table-striped table-sm' id='reservations_table'></table>"
 				+"</div>"
 				+"<div class='tab-pane fade' id='transactions_content'>"
-					+"<h2>Transaction History</h2>"
+					+"<h2 style='margin-bottom: 40px;'>Transaction History</h2>"
+					+"<table class='table table-striped table-sm' id='transactions_table'></table>"
 				+"</div>"
 			+"</div>"
 		+"</div>"
@@ -122,6 +131,59 @@ function renderInventoryTable(data) {
 			{ "title": "License Plate",     "data": "registrationID"     },
 			{ "title": "Current Miles",     "data": "mileage"            },
 			{ "title": "Options",           "data": "options"            }
+		]
+	}); 
+}
+
+function renderUsersTable(data) {
+	window.usersTable = $("#users_table").DataTable({
+		"pageLength": 25,
+		"data":       data,
+		"autoWidth":  false,
+		"columns": [
+			{ "title": "ID",          	"data": "ID"                 },
+			{ "title": "Username",       	"data": "username"           },
+			{ "title": "Password",          "data": "password"           },
+			{ "title": "Address",         	"data": "address"            },
+			{ "title": "Driver's License",  "data": "driverslicense"     },
+			{ "title": "Payment Info",      "data": "paymentinformation" },
+			{ "title": "Options",           "data": "options"            }
+		]
+	}); 
+}
+
+function renderReservationsTable(data) {
+	window.reservationsTable = $("#reservations_table").DataTable({
+		"pageLength": 25,
+		"data":       data,
+		"autoWidth":  false,
+		"columns": [
+			{ "title": "Lot Id",       	"data": "locationId"         },
+			{ "title": "Car Id",          	"data": "carId"              },
+			{ "title": "Total Hours",       "data": "hours"              },
+			{ "title": "Price",         	"data": "price"              },
+			{ "title": "Pick-Up",    	"data": "startdate"          },
+			{ "title": "Return",            "data": "enddate"            },
+			{ "title": "User Id",           "data": "userID"             },
+			{ "title": "Options",           "data": "options"            }
+		]
+	}); 
+}
+
+function renderTransactionsTable(data) {
+	window.transactionsTable = $("#transactions_table").DataTable({
+		"pageLength": 25,
+		"data":       data,
+		"autoWidth":  false,
+		"columns": [
+			{ "title": "User ID",          	"data": "userID"              },
+			{ "title": "Car ID",       	"data": "carID"               },
+			{ "title": "Location ID",     	"data": "locationID"          },
+			{ "title": "Status",         	"data": "field"               },
+			{ "title": "Price",  	        "data": "price"               },
+			{ "title": "Pick-Up Date",      "data": "startDate"           },
+			{ "title": "Return Date",       "data": "endDate"             },
+			{ "title": "Options",           "data": "options"             }
 		]
 	}); 
 }
