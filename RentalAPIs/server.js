@@ -1,9 +1,10 @@
 var express = require('express'),
     app = express(),
-    port = process.env.PORt || 4000.
-    bodyParser = require('body-parser');
-
-app.use(bodyParser.urlencoded({extended: true}));
+    port = process.env.PORt || 7000.
+bodyParser = require('body-parser');
+var cors = require("cors");
+app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 var routes = require('./routes');

@@ -66,7 +66,7 @@ function ChangeUserData({ history }) {
             className="d-flex justify-content-center align-items-center"
           >
             <div style={{ width: 300 }}>
-              <h1 className="text-center">Sign Up</h1>
+              <h1 className="text-center">Change Your Data</h1>
               <Form onSubmit={onFormSubmit}>
                 <Form.Group>
                   <Form.Label value={auth.data.Items[0].username}>
@@ -133,8 +133,9 @@ function ChangeUserData({ history }) {
                   />
                 </Form.Group>
                 <Button variant="primary" type="submit" className="w-100 mt-3">
-                  Sign Up
+                  Change Your Data
                 </Button>
+
               </Form>
             </div>
           </div>

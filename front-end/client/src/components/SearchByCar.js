@@ -1,40 +1,13 @@
 import React, { Component, Fragment, useState } from "react";
-import { Form, Button, Nav } from "react-bootstrap";
+import { Form, Button, Nav, Table } from "react-bootstrap";
+import { Container, Col, MDBDataTable } from "mdbreact"
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default class SearchByCar extends Component {
   constructor() {
     super();
-    this.state = { Cars: [], filtered: [] };
-    this.handleChange = this.handleChange.bind(this);
-  }
-  handleChange(e) {
-    // Variable to hold the original version of the list
-    let currentList = [];
-    // Variable to hold the filtered list before putting into state
-    let newList = [];
-
-    // If the search bar isn't empty
-    if (e.target.value !== "") {
-      currentList = this.state.Cars;
-      newList = currentList.filter((item) => {
-        // change current item to lowercase
-        const byMake = item.make.toLowerCase();
-        const byType = item.type.toLowerCase();
-        const filter = e.target.value.toLowerCase();
-        // check to see if the current list item includes the search term
-        // If it does, it will be added to newList. Using lowercase eliminates
-        // issues with capitalization in search terms and search content
-        return byMake.includes(filter) || byType.includes(filter);
-      });
-    } else {
-      // If the search bar is empty, set newList to original task list
-      newList = this.state.Cars;
-    }
-    // Set the filtered state based on what our rules added to newList
-    this.setState({
-      filtered: newList,
-    });
+    this.state = { Cars: [], filtered: [], rowCars: [], isLoading: true };
   }
   componentDidMount() {
     axios
@@ -50,50 +23,115 @@ export default class SearchByCar extends Component {
         } else {
           console.log("I AM HERE");
         }
-      })
+      }).then(async () => this.setState({ rowCars: this.assembleCars(), isLoading: false }))
       .catch((e) => {
         console.log("error" + e);
       });
   }
 
+  assembleCars(e) {
+    var price = 0;
+    var location = "howdy hey";
+    let cars = this.state.Cars.map((car) => {
+      return (
+        {
+          Make: car.make,
+          Model: car.model,
+          Type: car.type,
+          Condition: car.condition,
+          Mileage: car.mileage,
+          position: <Link to={{ pathname: "/checkout", state: { car: car } }}> CheckOut </Link>
+        }
+      )
+    })
+    return cars
+  }
+
   render() {
+    const cardata = {
+      columns: [
+        {
+          label: "Make",
+          field: 'Make', width: 150
+        },
+        {
+          label: "Model",
+          field: "Model",
+          width: 150
+        },
+        {
+          label: "Type",
+          field: "Type",
+          width: 150
+        },
+        {
+          label: "Condition",
+          field: "Condition",
+          width: 150
+        },
+        {
+          label: "Mileage",
+          field: "Mileage",
+          width: 150
+        },
+        {
+          field: "position",
+          width: 150
+        }
+      ],
+      rows: this.state.rowCars,
+    }
     return (
-      <div>
-        <input
-          type="text"
-          className="input"
-          onChange={this.handleChange}
-          placeholder="Search..."
-        />
-        <table className="table">
-          {" "}
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Make</th>
-              <th>Model</th>
-              <th>Type</th>
-              <th>Condition</th>
-              <th>Mileage</th>
-              <th>Cost</th>
-            </tr>
-          </thead>
-          {this.state.filtered.map((Car, index) => (
-            <tr key={Car.ID}>
-              <td>{Car.ID}</td>
-              <td>{Car.make} </td>
-              <td>{Car.model}</td>
-              <td>{Car.type}</td>
-              <td>{Car.condition}</td>
-              <td>{Car.mileage}</td>
-              <td>{Car.cost}</td>
-              <td>
-                <Button>Select </Button>
-              </td>
-            </tr>
-          ))}
-        </table>
-      </div>
-    );
+
+      <div >
+        <p style={{ fontSize: 20, color: "#4a54f1", textAlign: "left", paddingTop: "0px" }}> Search by Car </p>
+        <Container>
+          <Col md="10">
+            <MDBDataTable scrollY maxHeight="400px" hover small data={cardata} />
+
+          </Col>
+        </Container>
+      </div >
+    )
   }
 }
+
+/* render() {
+   return (
+     <div>
+       <input
+         type="text"
+         className="input"
+         onChange={this.handleChange}
+         placeholder="Search..."
+       />
+       <Table className="table" bordered >
+         {" "}
+         <thead>
+           <tr>
+             <th>ID</th>
+             <th>Make</th>
+             <th>Model</th>
+             <th>Type</th>
+             <th>Condition</th>
+             <th>Mileage</th>
+           </tr>
+         </thead>
+         {this.state.filtered.map((Car, index) => (
+           <tr key={Car.ID}>
+             <td>{Car.ID}</td>
+             <td>{Car.make} </td>
+             <td>{Car.model}</td>
+             <td>{Car.type}</td>
+             <td>{Car.condition}</td>
+             <td>{Car.mileage}</td>
+             <td>
+               <Link to={{ pathname: "/checkout", state: { car: Car } }}> CheckOut </Link>>
+             </td>
+           </tr>
+         ))}
+       </Table>
+     </div>
+   );
+ }*/
+

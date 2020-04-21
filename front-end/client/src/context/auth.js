@@ -4,6 +4,7 @@ export const authContext = createContext({});
 const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({ loading: true, data: null });
 
+
   const setAuthData = (data) => {
     setAuth({ data: data });
   };
@@ -23,5 +24,6 @@ const AuthProvider = ({ children }) => {
     </authContext.Provider>
   );
 };
+
 
 export default AuthProvider;

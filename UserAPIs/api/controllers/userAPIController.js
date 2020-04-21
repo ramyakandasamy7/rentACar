@@ -98,13 +98,14 @@ exports.modify = function (req, res) {
       ID: req.body.ID,
     },
     UpdateExpression:
-      " set username=:x, password=:y, address=:z, paymentinformation=:a, driverslicense=:b ",
+      " set username=:x, password=:y, address=:z, paymentinformation=:a, driverslicense=:b, membershipstatus =:c",
     ExpressionAttributeValues: {
       ":x": req.body.username,
       ":y": req.body.password,
       ":z": req.body.address,
       ":a": req.body.paymentinformation,
       ":b": req.body.driverslicense,
+      ":c": req.body.membership
     },
     ReturnValues: "UPDATED_NEW",
   };

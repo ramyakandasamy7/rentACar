@@ -21,7 +21,7 @@ function Admin({ history }) {
     return (
       <div>
         <NavBarLoggedIn></NavBarLoggedIn>
-        <a onClick={searchbyCar}> Prefer to Search by Car Type? Click Here</a>
+        <a onClick={searchbyCar} style={{ fontSize: 13, color: "#4a54f1", textAlign: "left", paddingTop: "100px" }}> Prefer to Search by Car Type? </a>
         <SearchByCity></SearchByCity>
       </div>
     );
@@ -30,7 +30,7 @@ function Admin({ history }) {
       <div>
         <NavBarLoggedIn></NavBarLoggedIn>
         <h3></h3>
-        <a onClick={searchCity}> Prefer to Search by Location? Click Here</a>
+        <a onClick={searchCity} style={{ fontSize: 13, color: "#4a54f1", textAlign: "left", paddingTop: "100px" }}> Prefer to Search by Location? </a>
         <SearchbyCar></SearchbyCar>
       </div>
     );

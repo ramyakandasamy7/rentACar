@@ -44,7 +44,24 @@ rentalRouter.get("/getlocationbyID", (req, res) => {
     }
   });
 });
+//post by ID for axios
 
+rentalRouter.post("/postlocationID", (req, res) => {
+  var params = {
+    TableName: "rentalLocationDB",
+    Key: {
+      ID: req.body.ID,
+    },
+  };
+  docClient.get(params, function (err, data) {
+    if (err) {
+      console.log("error -" + JSON.stringify(err, null, 2));
+    } else {
+      console.log("SUCCESS" + JSON.stringify(data, null, 2));
+      res.send(data);
+    }
+  });
+});
 rentalRouter.post("/getlocationbyCity", (req, res) => {
   var city = req.body.city;
   var state = req.body.state;

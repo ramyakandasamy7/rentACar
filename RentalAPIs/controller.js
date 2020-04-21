@@ -1,12 +1,13 @@
 'use strict';
 var express = require('express')
-var DynamoDB = require('aws-sdk/clients/dynamodb'); 
-var docClient = new DynamoDB.DocumentClient({region: 'us-east-1'});
+var DynamoDB = require('aws-sdk/clients/dynamodb');
+var docClient = new DynamoDB.DocumentClient({ region: 'us-east-1' });
 
-exports.showhome = function(req, res) {
+exports.showhome = function (req, res) {
     res.render('index');
 };
 
+<<<<<<< Updated upstream
 exports.showhistory = function(req,res) {
     var requests = [];
     var params = {
@@ -32,12 +33,15 @@ exports.showhistory = function(req,res) {
 }
 
 exports.getRental = function(req, res) {
+=======
+exports.getRental = function (req, res) {
+>>>>>>> Stashed changes
     var requests = [];
     var params = {
-        TableName: "testRental",
+        TableName: "rentalReservationDB",
     };
     docClient.scan(params, (err, data) => {
-        data.Items.forEach(function(item){
+        data.Items.forEach(function (item) {
             requests.push(item);
         });
         console.log(requests);
@@ -45,6 +49,7 @@ exports.getRental = function(req, res) {
     });
 }
 
+<<<<<<< Updated upstream
 exports.cancelReservation = function(req, res) {
     console.log("HELLO");
     console.log(req.body.Id);
@@ -123,62 +128,105 @@ exports.returnVehicle = function(req, res) {
 
 exports.createRental = function(req, res) {
     var ID = Math.random().toString(36).substr(2,9);
+=======
+exports.inRange = function (req, res) {
+    console.log(req.body.startdate);
+    console.log(req.body.enddate);
+    console.log(req.body.carID)
+    var result = false;
+    var trigstart = 0;
+    var trigend = 0;
+    var carId = req.body.carID;
+    var startdate = new Date(req.body.startdate);
+    var enddate = new Date(req.body.enddate);
+
+    //console.log("date is!" + date);
+
     var params = {
-        TableName: "testRental",
+        TableName: "rentalReservationDB",
+        FilterExpression: "carId = :CarId",
+        ExpressionAttributeValues: {
+            ":CarId": carId,
+        }
+
+    };
+    docClient.scan(params, (err, data) => {
+        console.log(req.body.startdate);
+        console.log(req.body.enddate);
+        data.Items.forEach(function (item) {
+            if ((startdate <= new Date(item.enddate)) && (new Date(item.startdate) <= enddate)) {
+                result = true;
+                trigstart = new Date(item.startdate);
+                trigend = new Date(item.enddate);
+            }
+        });
+        res.json({ result: result, startDate: trigstart, endDate: trigend });
+    });
+}
+
+exports.createRental = function (req, res) {
+    console.log(" I AM IN create Rental" + "CAR IS" + req.body.car + " " + req.body.location + " " + req.body.price);
+    var ID = Math.random().toString(36).substr(2, 9);
+
+>>>>>>> Stashed changes
+    var params = {
+        TableName: "rentalReservationDB",
         Item: {
-            rentalId: ID,
+            id: ID,
             carId: req.body.car,
-            userId: req.body.user,
-            locationid: req.body.location,
+            userID: req.body.user,
+            locationId: req.body.location,
             price: req.body.price,
-            date: req.body.date
+            startdate: req.body.startdate,
+            enddate: req.body.enddate,
+            hours: req.body.hours
         }
     };
     docClient.put(params, (err, data) => {
-        if(err) {
-            return err;
+        if (err) {
+            res.send(err);
         }
         else {
-            return data;
+            res.send(data);
         }
     });
 
 }
 
-exports.updateRental = function(req, res) {
+exports.updateRental = function (req, res) {
     var params = {
-        TableName: "testRental",
+        TableName: "rentalReservationDB",
         Key: {
-          rentalId: req.body.rentalId
+            rentalId: req.body.rentalId
         },
         UpdateExpression:
-          "set carId=:car, userId=:user, locationid=:location, price=:price, date=:date",  
+            "set carId=:car, userId=:user, locationid=:location, price=:price, date=:date",
         ExpressionAttributeValues: {
-          ":car": req.body.car,
-          ":user": req.body.user,
-          ":location": req.body.location,
-          ":price": req.body.price,
-          ":date": req.body.date
+            ":car": req.body.car,
+            ":user": req.body.user,
+            ":location": req.body.location,
+            ":price": req.body.price,
+            ":date": req.body.date
         }
-      };
-      docClient.update(params, function(err, data) {
+    };
+    docClient.update(params, function (err, data) {
         if (err) {
-          return err
+            return err
         } else {
-          return data;
+            return data;
         }
-      });
+    });
 }
 
-exports.deleteRental = function(req, res) {
+exports.deleteRental = function (req, res) {
     var params = {
-        TableName: "testRental",
+        TableName: "rentalReservationDB",
         Key: {
             rentalId: req.body.id
         }
     };
     docClient.delete(params, (err, data) => {
-        if(err) {
+        if (err) {
             return err;
         }
         else {

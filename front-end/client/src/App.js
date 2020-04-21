@@ -8,12 +8,15 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import UserInfo from "./pages/UserInfo";
 import ChangeUserData from "./pages/ChangeUserData";
+import CheckOutPage from "./pages/CheckOutPage"
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App(props) {
   return (
     <Router>
       <div>
         <PrivateRoute path="/admin" component={Admin} />
+        <Route exact path="/checkout" component={CheckOutPage} />
         <Route exact path="/" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/userinfo" component={UserInfo} />

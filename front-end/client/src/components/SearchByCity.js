@@ -1,20 +1,24 @@
 import React, { Component, Fragment, useState } from "react";
-import { Form, Button, Nav } from "react-bootstrap";
+import { MDBDataTable, Row, Col, Card, CardBody, Button, Container } from 'mdbreact';
 import axios from "axios";
+import { Collapse } from "@material-ui/core";
+import { Link } from "react-router-dom"
 
 export default class SearchByCity extends Component {
   constructor() {
     super();
     this.state = {
       Locations: [],
+      rowLocations: [],
+      rowCars: [],
       Filtered: [],
       Cars: [],
       carView: false,
+      isLoading: true
     };
-    this.handleChange = this.handleChange.bind(this);
-    this.showCity = this.showCity.bind(this);
+    this.showCars = this.showCars.bind(this);
   }
-  showCity = (e) => {
+  showCars = (e) => {
     alert(`button index selected is ${this.state.Locations[e].ID}`);
     axios
       .post("http://localhost:9000/getlocationID", {
@@ -30,140 +34,159 @@ export default class SearchByCity extends Component {
           });
           console.log("Car is" + this.state.Cars[0].model);
         }
-      })
+      }).then(async () => this.setState({ rowCars: this.assembleCars(), isLoading: false }))
       .catch((e) => {
         console.log("error" + e);
       });
   };
-  handleChange(e) {
-    // Variable to hold the original version of the list
-    let currentList = [];
-    // Variable to hold the filtered list before putting into state
-    let newList = [];
-
-    // If the search bar isn't empty
-    if (e.target.value !== "") {
-      currentList = this.state.Locations;
-      newList = currentList.filter((item) => {
-        // change current item to lowercase
-        const byName = item.name.toLowerCase();
-        const byCity = item.city.toLowerCase();
-        const filter = e.target.value.toLowerCase();
-        // check to see if the current list item includes the search term
-        // If it does, it will be added to newList. Using lowercase eliminates
-        // issues with capitalization in search terms and search content
-        return byName.includes(filter) || byCity.includes(filter);
-      });
-    } else {
-      // If the search bar is empty, set newList to original task list
-      newList = this.state.Locations;
-    }
-    // Set the filtered state based on what our rules added to newList
-    this.setState({
-      Filtered: newList,
+  assemblePosts(e) {
+    let posts = this.state.Locations.map((Location, index) => {
+      return (
+        {
+          Name: <Button class="text-info" id={index} onClick={(e) => this.showCars(e.target.id)} > {Location.name} </Button>,
+          Address: Location.address,
+          City: Location.city,
+          State: Location.state
+        }
+      )
     });
+    console.log("POSTS" + posts[0].Name)
+    return posts;
+  }
+  assembleCars(e) {
+    let cars = this.state.Cars.map((car) => {
+      var price;
+      if (car.type == "Sedan") {
+        price = this.state.Locations[this.state.selectedLocation].sedanPPH;
+      }
+      else if (car.type == "Luxury") {
+        price = this.state.Locations[this.state.selectedLocation].luxuryPPH;
+      }
+      else if (car.type == "Suv") {
+        price = this.state.Locations[this.state.selectedLocation].suvPPH;
+      }
+      else if (car.type == "Compact") {
+        price = this.state.Locations[this.state.selectedLocation].compactPPH;
+      }
+      else if (car.type == "Truck") {
+        price = this.state.Locations[this.state.selectedLocation].truckPPH;
+      }
+      return (
+        {
+          Make: car.make,
+          Model: car.model,
+          Type: car.type,
+          Condition: car.condition,
+          price: price,
+          position: <Link to={{ pathname: "/checkout", state: { car: car } }}> CheckOut </Link>
+        }
+      )
+    })
+    return cars
   }
   componentDidMount() {
     axios
       .get("http://localhost:5000/locations")
       .then((result) => {
         if (result.status === 200) {
-          console.log(result.data[0]);
+          console.log("LALALALALA" + result.data);
           this.setState({
             Locations: result.data,
-            Filtered: result.data,
+            carView: false
           });
         } else {
           console.log("I AM HERE");
         }
-      })
+      }).then(async () => this.setState({ rowLocations: this.assemblePosts(), isLoading: false }))
       .catch((e) => {
         console.log("error" + e);
       });
   }
   render() {
-    if (!this.state.carView) {
+    const cardata = {
+      columns: [
+        {
+          label: "Make",
+          field: 'Make',
+          width: 250
+        },
+        {
+          label: "Model",
+          field: "Model",
+          width: 250
+        },
+        {
+          label: "Type",
+          field: "Type",
+          width: 250
+        },
+        {
+          label: "Condition",
+          field: "Condition",
+          width: 250
+        },
+        {
+          label: "Price", field: "price",
+          width: 250
+        },
+        {
+          label: "Checkout",
+          field: "position",
+          width: 250
+        }
+      ],
+      rows: this.state.rowCars,
+    }
+    const data = {
+      columns: [
+        {
+          label: "Name",
+          field: 'Name',
+          width: 150
+        },
+        {
+          label: "Address",
+          field: "Address",
+          width: 150
+        },
+        {
+          label: "City",
+          field: "City",
+          width: 150
+        },
+        {
+          label: "State",
+          field: "State",
+          width: 150
+        },
+      ],
+      rows: this.state.rowLocations,
+
+    }
+    if (this.state.carView == true) {
       return (
-        <div>
-          <input
-            type="text"
-            className="input"
-            onChange={this.handleChange}
-            placeholder="Search..."
-          />
-          <table className="table">
-            {" "}
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Address</th>
-                <th>City</th>
-                <th>State</th>
-              </tr>
-            </thead>
-            {this.state.Filtered.map((Location, index) => (
-              <tr key={Location.ID}>
-                <td>{Location.ID}</td>
-                <td>{Location.name} </td>
-                <td>{Location.address}</td>
-                <td>{Location.city}</td>
-                <td>{Location.state}</td>
-                <td>
-                  <Button
-                    id={index}
-                    onClick={(e) => this.showCity(e.target.id)}
-                  >
-                    Select{" "}
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </table>
+
+        <div >
+          <Container>
+            <Col md="10">
+              <MDBDataTable scrollY maxHeight="200px" hover small data={cardata} />
+
+            </Col>
+          </Container>
         </div>
-      );
-    } else {
+      )
+    }
+    else {
       return (
-        <div>
-          <Button onClick={() => this.setState({ carView: false })}>
-            Back
-          </Button>
-          <h3> {this.state.Locations[this.state.selectedLocation].name} </h3>
-          <h3>
-            {this.state.Locations[this.state.selectedLocation].street}{" "}
-            {this.state.Locations[this.state.selectedLocation].city}{" "}
-            {this.state.Locations[this.state.selectedLocation].state}
-          </h3>
-          <table>
-            <thead>
-              <tr>
-                <th>ID</th>
-                <th>Make</th>
-                <th>Model</th>
-                <th>Type</th>
-                <th>State</th>
-              </tr>
-            </thead>
-            <tbody className="table">
-              {this.state.Cars.map((Car, index) => (
-                <tr key={Car.ID}>
-                  <td>{Car.make} </td>
-                  <td>{Car.model}</td>
-                  <td>{Car.type}</td>
-                  <td>{Car.condition}</td>
-                  <td>{Car.mileage}</td>
-                  <td>{Car.cost}</td>
-                  <td>
-                    <Button id={index} onClick={(e) => this.checkout()}>
-                      Select Here
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      );
+        <Container class="d-flex justify-content-center align-items-center">
+
+          <p style={{ fontSize: 20, color: "#4a54f1", textAlign: "left", paddingTop: "0px" }}> Search by Location </p>
+
+
+          <MDBDataTable scrollY hover small data={data} />
+
+        </Container>)
     }
   }
+
 }
