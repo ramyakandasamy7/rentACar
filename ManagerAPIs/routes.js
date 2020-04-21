@@ -3,6 +3,9 @@ module.exports = function(app) {
     var manager        = require('./managerController');
     var lot            = require('./locationController');
     var car            = require('./inventoryController');
+    var users          = require('./usersController');
+    var reserv         = require('./reservationsController');
+    var trans          = require('./transactionsController');
     var bodyParser     = require('body-parser');
     var methodOverride = require('method-override');
 
@@ -27,15 +30,29 @@ module.exports = function(app) {
 
     app.route("/location")
 	.get(lot.getAllLocations)
+	.put(lot.updateALocation)
 	.post(lot.addALocation)
-	.put(lot.updateALocation);
-
-    app.route("/location/:locationId")
 	.delete(lot.deleteALocation);
 
     app.route("/inventory")
 	.get(car.getAllCars)
 	.put(car.updateACar)
-	.post(car.addACar);
+	.post(car.addACar)
+	.delete(car.deleteACar);
+
+    app.route("/users")
+	.get(users.getAllUsers)
+	.put(users.updateAUser)
+	.delete(users.deleteAUser);
+
+    app.route("/reservations")
+	.get(reserv.getAllReservations)
+	.put(reserv.updateAReservation)
+	.delete(reserv.deleteAReservation);
+
+    app.route("/transactions")
+	.get(trans.getAllTransactions)
+	.put(trans.updateATransaction)
+	.delete(trans.deleteATransaction);
 
 }

@@ -2,13 +2,13 @@
 var express    = require('express')
 var DynamoDB   = require('aws-sdk/clients/dynamodb'); 
 var docClient  = new DynamoDB.DocumentClient({region: 'us-east-1'});
-var TABLE_NAME = "carInventoryDB";
+var TABLE_NAME = "rentalReservationDB";
 
 exports.showhome = function(req, res) {
     res.render('index');
 };
 
-exports.getAllCars = function(req, res) {
+exports.getAllReservations = function(req, res) {
     var params = {
         TableName: TABLE_NAME,
     };
@@ -23,7 +23,7 @@ exports.getAllCars = function(req, res) {
     });
 }
 
-exports.addACar = function(req, res) {
+exports.addAReservation = function(req, res) {
     var ID = Math.random().toString(36).substr(2,9);
     var params = {
         TableName: TABLE_NAME,
@@ -54,7 +54,7 @@ exports.addACar = function(req, res) {
 
 }
 
-exports.updateACar = function(req, res) {
+exports.updateAReservation = function(req, res) {
     console.log(req.body);
     var params = {
         TableName: TABLE_NAME,
@@ -98,23 +98,22 @@ exports.updateACar = function(req, res) {
       });
 }
 
-exports.deleteACar = function(req, res) {
+exports.deleteAReservation = function(req, res) {
     console.log(req.body);
-    console.log(req.query);
-    console.log(req.params);
     var params = {
         TableName: TABLE_NAME,
         Key: {
-            ID: req.body.carId
+            ID: req.body.resId
         }
     };
     docClient.delete(params, (err, data) => {
         if(err) {
+	    console.log(err);
             res.send(err);
         }
         else {
-	    res.status(200);
-            res.json(data);
+            res.status(200);
+	    res.json(data);
         }
     });
 

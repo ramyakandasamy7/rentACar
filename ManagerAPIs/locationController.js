@@ -108,7 +108,7 @@ exports.deleteALocation = function(req, res) {
     var params = {
         TableName: TABLE_NAME,
         Key: {
-            ID: req.params.locationId
+            ID: req.body.locationId
         }
     };
     docClient.delete(params, (err, data) => {

@@ -2,13 +2,13 @@
 var express    = require('express')
 var DynamoDB   = require('aws-sdk/clients/dynamodb'); 
 var docClient  = new DynamoDB.DocumentClient({region: 'us-east-1'});
-var TABLE_NAME = "carInventoryDB";
+var TABLE_NAME = "carRentalUsers";
 
 exports.showhome = function(req, res) {
     res.render('index');
 };
 
-exports.getAllCars = function(req, res) {
+exports.getAllUsers = function(req, res) {
     var params = {
         TableName: TABLE_NAME,
     };
@@ -23,7 +23,7 @@ exports.getAllCars = function(req, res) {
     });
 }
 
-exports.addACar = function(req, res) {
+exports.addAUser = function(req, res) {
     var ID = Math.random().toString(36).substr(2,9);
     var params = {
         TableName: TABLE_NAME,
@@ -54,7 +54,7 @@ exports.addACar = function(req, res) {
 
 }
 
-exports.updateACar = function(req, res) {
+exports.updateAUser = function(req, res) {
     console.log(req.body);
     var params = {
         TableName: TABLE_NAME,
@@ -98,14 +98,11 @@ exports.updateACar = function(req, res) {
       });
 }
 
-exports.deleteACar = function(req, res) {
-    console.log(req.body);
-    console.log(req.query);
-    console.log(req.params);
+exports.deleteAUser = function(req, res) {
     var params = {
         TableName: TABLE_NAME,
         Key: {
-            ID: req.body.carId
+            ID: req.body.userId
         }
     };
     docClient.delete(params, (err, data) => {
@@ -113,8 +110,8 @@ exports.deleteACar = function(req, res) {
             res.send(err);
         }
         else {
-	    res.status(200);
-            res.json(data);
+            res.status(200);
+	    res.json(data);
         }
     });
 
