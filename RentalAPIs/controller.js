@@ -7,35 +7,32 @@ exports.showhome = function (req, res) {
     res.render('index');
 };
 
-<<<<<<< Updated upstream
-exports.showhistory = function(req,res) {
+exports.showhistory = function (req, res) {
     var requests = [];
     var params = {
         TableName: "rentalTransactionDB",
         IndexName: "userID-index",
-		KeyConditionExpression: "#i = :i",
-		ExpressionAttributeNames: {
-			"#i" : "userID"
-		},
-		ExpressionAttributeValues: {
-			":i": '12345'
-		}
+        KeyConditionExpression: "#i = :i",
+        ExpressionAttributeNames: {
+            "#i": "userID"
+        },
+        ExpressionAttributeValues: {
+            ":i": '12345'
+        }
     };
     docClient.query(params, (err, data) => {
         console.log(err);
-        data.Items.forEach(function(item){
+        data.Items.forEach(function (item) {
             requests.push(item);
         });
         console.log(requests);
-        res.render('history', {"requests":requests})
+        res.render('history', { "requests": requests })
         //res.send(requests)
     });
 }
 
-exports.getRental = function(req, res) {
-=======
 exports.getRental = function (req, res) {
->>>>>>> Stashed changes
+
     var requests = [];
     var params = {
         TableName: "rentalReservationDB",
@@ -49,8 +46,7 @@ exports.getRental = function (req, res) {
     });
 }
 
-<<<<<<< Updated upstream
-exports.cancelReservation = function(req, res) {
+exports.cancelReservation = function (req, res) {
     console.log("HELLO");
     console.log(req.body.Id);
     console.log(req.body.userID);
@@ -58,54 +54,54 @@ exports.cancelReservation = function(req, res) {
     var params = {
         TableName: "rentalTransactionDB",
         Key: {
-          'ID': req.body.Id,
-          'userID': req.body.userID
+            'ID': req.body.Id,
+            'userID': req.body.userID
         },
         UpdateExpression:
-          "set field = :status",  
+            "set field = :status",
         ExpressionAttributeValues: {
-          ":status": 'CANCELLED',
+            ":status": 'CANCELLED',
         }
-      };
-      docClient.update(params, function(err, data) {
+    };
+    docClient.update(params, function (err, data) {
         if (err) {
             console.log(err);
-          return err;
+            return err;
         } else {
             console.log(data);
             res.redirect('/history');
-            
-          return data
+
+            return data
         }
-      });
+    });
 }
 
-exports.returnVehicle = function(req, res) {
+exports.returnVehicle = function (req, res) {
     console.log(req.body.Id);
     var requests = [];
     var params = {
         TableName: "rentalTransactionDB",
         Key: {
-          ID: req.body.Id,
-          'userID': req.body.userID
+            ID: req.body.Id,
+            'userID': req.body.userID
         },
         UpdateExpression:
-          "set field = :status",  
+            "set field = :status",
         ExpressionAttributeValues: {
-          ":status": 'RETURNED',
+            ":status": 'RETURNED',
         }
-      };
-      docClient.update(params, function(err, data) {
+    };
+    docClient.update(params, function (err, data) {
         if (err) {
             console.log(err);
-          return err;
+            return err;
         } else {
             params = {
                 TableName: "rentalTransactionDB",
                 IndexName: "userID-index",
                 KeyConditionExpression: "#i = :i",
                 ExpressionAttributeNames: {
-                    "#i" : "userID"
+                    "#i": "userID"
                 },
                 ExpressionAttributeValues: {
                     ":i": '12345'
@@ -113,22 +109,18 @@ exports.returnVehicle = function(req, res) {
             };
             docClient.query(params, (err, data) => {
                 console.log(err);
-                data.Items.forEach(function(item){
+                data.Items.forEach(function (item) {
                     requests.push(item);
                 });
                 console.log(requests);
-                res.render('history', {"requests":requests})
+                res.render('history', { "requests": requests })
                 //res.send(requests)
             });
             console.log(data);
-          return data
+            return data
         }
-      });
+    });
 }
-
-exports.createRental = function(req, res) {
-    var ID = Math.random().toString(36).substr(2,9);
-=======
 exports.inRange = function (req, res) {
     console.log(req.body.startdate);
     console.log(req.body.enddate);
@@ -139,9 +131,6 @@ exports.inRange = function (req, res) {
     var carId = req.body.carID;
     var startdate = new Date(req.body.startdate);
     var enddate = new Date(req.body.enddate);
-
-    //console.log("date is!" + date);
-
     var params = {
         TableName: "rentalReservationDB",
         FilterExpression: "carId = :CarId",
@@ -167,8 +156,6 @@ exports.inRange = function (req, res) {
 exports.createRental = function (req, res) {
     console.log(" I AM IN create Rental" + "CAR IS" + req.body.car + " " + req.body.location + " " + req.body.price);
     var ID = Math.random().toString(36).substr(2, 9);
-
->>>>>>> Stashed changes
     var params = {
         TableName: "rentalReservationDB",
         Item: {
