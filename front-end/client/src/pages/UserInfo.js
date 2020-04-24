@@ -32,13 +32,6 @@ function UserInfo({ history }) {
     const ID = auth.data.Items[0].ID;
     const onFormSubmit = (e) => {
       e.preventDefault();
-      console.log("ID IS" + ID);
-      console.log("ID IS" + username);
-      console.log("ID IS" + password);
-      console.log("ID IS" + driverslicense);
-      console.log("ID IS" + address);
-      console.log("ID IS" + paymentinformation);
-      console.log("ID IS" + membership);
       axios
         .post("http://localhost:4000/modifyuser", {
           ID,

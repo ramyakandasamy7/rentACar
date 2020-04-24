@@ -161,4 +161,27 @@ carRouter.post("/getlocationID", (req, res) => {
     }
   });
 });
+
+carRouter.post("/getbytype", (req, res) => {
+  var type = req.body.type;
+  var params = {
+    TableName: "carInventoryDB",
+    FilterExpression: "#typeofCar = :type",
+    ExpressionAttributeValues: {
+      ":type": type
+    },
+    ExpressionAttributeNames: {
+      "#typeofCar": "type"
+    }
+  };
+  docClient.scan(params, function (err, data) {
+    if (err) {
+      res.send(err);
+      console.log(err, err.stack);
+    } else {
+      res.json(data);
+      console.log(data);
+    }
+  });
+});
 module.exports = carRouter;

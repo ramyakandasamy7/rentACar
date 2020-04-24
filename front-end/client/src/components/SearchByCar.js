@@ -40,7 +40,7 @@ export default class SearchByCar extends Component {
           Type: car.type,
           Condition: car.condition,
           Mileage: car.mileage,
-          position: <Link to={{ pathname: "/checkout", state: { car: car } }}> CheckOut </Link>
+          position: <Link to={{ pathname: "/checkout", state: { car: car, isValid: false } }}> CheckOut </Link>
         }
       )
     })
@@ -95,43 +95,4 @@ export default class SearchByCar extends Component {
     )
   }
 }
-
-/* render() {
-   return (
-     <div>
-       <input
-         type="text"
-         className="input"
-         onChange={this.handleChange}
-         placeholder="Search..."
-       />
-       <Table className="table" bordered >
-         {" "}
-         <thead>
-           <tr>
-             <th>ID</th>
-             <th>Make</th>
-             <th>Model</th>
-             <th>Type</th>
-             <th>Condition</th>
-             <th>Mileage</th>
-           </tr>
-         </thead>
-         {this.state.filtered.map((Car, index) => (
-           <tr key={Car.ID}>
-             <td>{Car.ID}</td>
-             <td>{Car.make} </td>
-             <td>{Car.model}</td>
-             <td>{Car.type}</td>
-             <td>{Car.condition}</td>
-             <td>{Car.mileage}</td>
-             <td>
-               <Link to={{ pathname: "/checkout", state: { car: Car } }}> CheckOut </Link>>
-             </td>
-           </tr>
-         ))}
-       </Table>
-     </div>
-   );
- }*/
 

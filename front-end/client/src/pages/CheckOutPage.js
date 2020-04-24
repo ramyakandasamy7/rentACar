@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, Component } from 'react';
 import DatePicker from "react-datepicker";
 import { Button } from "react-bootstrap"
 import axios from "axios"
@@ -6,7 +6,10 @@ import axios from "axios"
 import "react-datepicker/dist/react-datepicker.css";
 import { authContext } from "../context/auth";
 import NavBarLoggedIn from "../components/NavBarLoggedIn"
-import { MDBTable, MDBTableBody, MDBTableHead, Container } from 'mdbreact';
+import { MDBTable, MDBTableBody, MDBTableHead, Container, MDBDataTable, Col } from 'mdbreact';
+import { Modal } from "react-bootstrap"
+import { Link } from "react-router-dom";
+import Alternatives from "../components/Alternatives"
 
 
 const CheckOutPage = (props) => {
@@ -19,8 +22,17 @@ const CheckOutPage = (props) => {
     const [ppH, setppH] = useState(null);
     const [valid, setValid] = useState(false);
 
-    useEffect(() => {
+    const [alternateView, setalternateView] = useState(false);
+    console.log(alternateView + "ALTERNATE VIEW");
 
+    const myCallback = (dataFromChild) => {
+        setalternateView(dataFromChild);
+        setValid(true);
+        reserveCar();
+    }
+
+    useEffect(() => {
+        setalternateView(false);
         axios.post("http://localhost:5000/postlocationID", {
             ID: car.locationID
         }).then((result) => {
@@ -60,8 +72,11 @@ const CheckOutPage = (props) => {
                 enddate: enddate,
                 carID: car.ID
             }).then((result) => {
-                console.log("RESULT!" + result.data.result + "pph is" + ppH);
+                if (result.data.result == true) {
+                    setalternateView(true);
+                }
                 if (result.data.result == false) {
+                    setalternateView(false);
                     setselectedHours(hours);
                     if (hours <= 24 && ppH != "N/A") {
                         var temp = parseFloat(ppH) * hours
@@ -88,10 +103,6 @@ const CheckOutPage = (props) => {
         }
     }
 
-
-
-
-
     const sendTransaction = e => {
         console.log("in send Transaction");
         console.log("selected Hours " + selectedHours);
@@ -110,7 +121,7 @@ const CheckOutPage = (props) => {
             setValid(false)
         }).catch((e) => { console.log(e) })
     }
-    if (auth.data != null) {
+    if (auth.data != null && alternateView == false) {
         return (
             <div>
                 <NavBarLoggedIn></NavBarLoggedIn>
@@ -173,12 +184,74 @@ display: flex  !important;
             </div>
         );
 
-    } else {
-        return <h2>somethings wrong!</h2>;
+    }
+    else {
+        const carID = car.ID
+        const hello = car.type
+        return (
+            <div>
+                <Alternatives callbackFromParent={myCallback} hello={hello} carID={carID} startdate={startdate} enddate={enddate} />
+                <NavBarLoggedIn></NavBarLoggedIn>
+                <style>
+                    {`.react-datepicker {
+display: flex  !important;
+}`}
+                </style>
+                <DatePicker
+                    selected={startdate}
+                    onChange={(date) => setStartDate(date)}
+                    showTimeSelect
+                    dateFormat="Pp"
+                    timeIntervals={60}
+                    minDate={new Date()}
+
+                />
+                <DatePicker
+                    selected={enddate}
+                    onChange={(date) => setEndDate(date)}
+                    showTimeSelect
+                    dateFormat="Pp"
+                    timeIntervals={60}
+                    minDate={new Date()}
+                />
+
+
+                <Button onClick={(e) => reserveCar(e)}> Search For Availability </Button>
+                <Container class="d-flex justify-content-center align-items-center">
+                    <MDBTable>
+                        <MDBTableHead>
+                            <tr>
+
+                                <th>Make</th>
+                                <th>Model</th>
+                                <th>Type</th>
+                                <th>State</th>
+                                <th>Mileage</th>
+                                <th>Hours Selected</th>
+                                <th>Price </th>
+                                <th>Price per Hour</th>
+                            </tr>
+                        </MDBTableHead>
+                        <MDBTableBody >
+                            <td>{car.make} </td>
+                            <td>{car.model}</td>
+                            <td>{car.type}</td>
+                            <td>{car.condition}</td>
+                            <td>{car.mileage}</td>
+                            <td>{selectedHours}</td>
+                            <td>{price}</td>
+                            <td>{ppH}</td>
+                            <th> </th>
+
+                        </MDBTableBody>
+                    </MDBTable>
+                </Container>
+                <Button disabled={!valid} onClick={(e) => sendTransaction(e)}>
+                    Create Transaction </Button>
+            </div>
+        );
     }
 
 }
-
-
 
 export default CheckOutPage; 
