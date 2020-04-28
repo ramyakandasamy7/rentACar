@@ -69,6 +69,7 @@
                 <form method="POST" action="/cancelReservation">
                     <input type="hidden" id="Id" name="Id" value=<%=requests[i].id%>>
                     <input type="hidden" id="startdate" name="startdate" value=<%=requests[i].startdate%>>
+                    <input type="hidden" id="userID" name="userID" value=<%=requests[i].userID%>>
                     <input type="submit" value="CANCEL RESERVATION">
                 </form>
                 <% } else if(requests[i].status == 'IN-USE') { %>

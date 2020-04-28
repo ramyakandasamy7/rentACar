@@ -7,7 +7,6 @@ exports.showhome = function (req, res) {
     res.render('index');
 };
 
-
 exports.getRental = function (req, res) {
     console.log(req.params.id + "HOWDY HEY")
     var requests = [];
@@ -153,16 +152,19 @@ exports.updateRental = function (req, res) {
 
 exports.deleteRental = function (req, res) {
     console.log(req.body.Id);
+    console.log(req.body.userID);
+    console.log(req.body.startdate);
     var acceptedDate = new Date(req.body.startdate);
     acceptedDate.setHours(acceptedDate.getHours() + 1);
+    console.log(acceptedDate);
     var id = req.body.Id;
-    if (acceptedDate <= (new Date())) {
+    if (acceptedDate >= (new Date())) {
         console.log("I AM HERE");
         var params = {
             TableName: "rentalReservationDB",
             Key: {
                 id: id,
-                userID: "12345"
+                userID: req.body.userID
             }
         };
         docClient.delete(params, (err, data) => {
@@ -171,13 +173,14 @@ exports.deleteRental = function (req, res) {
                 return err;
             }
             else {
-                res.redirect('/history');
+                console.log("USER ID" + req.body.userID);
+                res.redirect('/history/' + req.body.userID);
                 return data;
             }
         });
     }
     else {
-        res.redirect('/history');
+        res.redirect('/history/' + req.body.userID);
     }
 
 }
