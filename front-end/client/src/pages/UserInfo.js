@@ -3,7 +3,6 @@ import { authContext } from "../context/auth";
 import { Form, Button } from "react-bootstrap";
 import { MDBTable, MDBTableHead, MDBTableBody } from "mdbreact";
 import NavBarLoggedIn from "../components/NavBarLoggedIn";
-import Popup from "reactjs-popup"
 import axios from "axios"
 import { Modal } from "react-bootstrap"
 
@@ -11,7 +10,6 @@ function UserInfo({ history }) {
 
   const { auth, setAuthData } = useContext(authContext);
   console.log(auth.data);
-  // const [email, setEmail] = useState(auth.data)
 
   function Example() {
     const [show, setShow] = useState(false);
@@ -19,6 +17,7 @@ function UserInfo({ history }) {
     const handleClose = () => setShow(false);
     const { auth, setAuthData } = useContext(authContext);
     const handleShow = () => setShow(true);
+
     const [username, setEmail] = useState(auth.data.Items[0].username);
     const [password, setPassword] = useState(auth.data.Items[0].password);
     const [membership, setMembership] = useState(auth.data.Items[0].membershipstatus)
@@ -33,7 +32,7 @@ function UserInfo({ history }) {
     const onFormSubmit = (e) => {
       e.preventDefault();
       axios
-        .post("http://localhost:4000/modifyuser", {
+        .post("http://34.239.128.242:4000/modifyuser", {
           ID,
           username,
           password,
@@ -48,13 +47,11 @@ function UserInfo({ history }) {
             console.log(ID);
             alert("User has updated!");
             axios
-              .post("http://localhost:4000/user", {
+              .post("http://34.239.128.242:4000/user", {
                 ID,
               })
               .then((result) => {
-                console.log("mama mia" + JSON.stringify(result));
                 setAuthData(result.data);
-                console.log("HOWDY HEY " + auth.data.Items[0]);
                 history.replace("/userinfo");
               });
           } else {

@@ -7,88 +7,40 @@ exports.showhome = function (req, res) {
     res.render('index');
 };
 
-exports.showhistory = function (req, res) {
-    var requests = [];
-    var params = {
-        TableName: "rentalTransactionDB",
-        IndexName: "userID-index",
-        KeyConditionExpression: "#i = :i",
-        ExpressionAttributeNames: {
-            "#i": "userID"
-        },
-        ExpressionAttributeValues: {
-            ":i": '12345'
-        }
-    };
-    docClient.query(params, (err, data) => {
-        console.log(err);
-        data.Items.forEach(function (item) {
-            requests.push(item);
-        });
-        console.log(requests);
-        res.render('history', { "requests": requests })
-        //res.send(requests)
-    });
-}
 
 exports.getRental = function (req, res) {
-
+    console.log(req.params.id + "HOWDY HEY")
     var requests = [];
     var params = {
         TableName: "rentalReservationDB",
     };
     docClient.scan(params, (err, data) => {
         data.Items.forEach(function (item) {
-            requests.push(item);
+            if (item.userID == req.params.id) {
+                requests.push(item);
+            }
         });
         console.log(requests);
-        res.send(requests)
+        res.render('history', { "requests": requests })
     });
 }
-
-exports.cancelReservation = function (req, res) {
-    console.log("HELLO");
+exports.returnVehicle = function (req, res) {
     console.log(req.body.Id);
     console.log(req.body.userID);
     var requests = [];
     var params = {
-        TableName: "rentalTransactionDB",
+        TableName: "rentalReservationDB",
         Key: {
-            'ID': req.body.Id,
-            'userID': req.body.userID
+            id: req.body.Id,
+            userID: req.body.userID
         },
         UpdateExpression:
-            "set field = :status",
-        ExpressionAttributeValues: {
-            ":status": 'CANCELLED',
-        }
-    };
-    docClient.update(params, function (err, data) {
-        if (err) {
-            console.log(err);
-            return err;
-        } else {
-            console.log(data);
-            res.redirect('/history');
-
-            return data
-        }
-    });
-}
-
-exports.returnVehicle = function (req, res) {
-    console.log(req.body.Id);
-    var requests = [];
-    var params = {
-        TableName: "rentalTransactionDB",
-        Key: {
-            ID: req.body.Id,
-            'userID': req.body.userID
-        },
-        UpdateExpression:
-            "set field = :status",
+            "set #s = :status",
         ExpressionAttributeValues: {
             ":status": 'RETURNED',
+        },
+        ExpressionAttributeNames: {
+            "#s": "status"
         }
     };
     docClient.update(params, function (err, data) {
@@ -96,28 +48,20 @@ exports.returnVehicle = function (req, res) {
             console.log(err);
             return err;
         } else {
-            params = {
-                TableName: "rentalTransactionDB",
-                IndexName: "userID-index",
-                KeyConditionExpression: "#i = :i",
-                ExpressionAttributeNames: {
-                    "#i": "userID"
-                },
-                ExpressionAttributeValues: {
-                    ":i": '12345'
-                }
+
+            var requests = [];
+            var params = {
+                TableName: "rentalReservationDB"
             };
-            docClient.query(params, (err, data) => {
+            docClient.scan(params, (err, data) => {
                 console.log(err);
                 data.Items.forEach(function (item) {
                     requests.push(item);
                 });
                 console.log(requests);
                 res.render('history', { "requests": requests })
-                //res.send(requests)
+
             });
-            console.log(data);
-            return data
         }
     });
 }
@@ -154,7 +98,8 @@ exports.inRange = function (req, res) {
 }
 
 exports.createRental = function (req, res) {
-    console.log(" I AM IN create Rental" + "CAR IS" + req.body.car + " " + req.body.location + " " + req.body.price);
+    console.log(" I AM IN create Rental" + "CAR IS" + req.body.car + " " + req.body.location + " " + req.body.price + req.body.status);
+    console.log(req.body.status + "STATUS");
     var ID = Math.random().toString(36).substr(2, 9);
     var params = {
         TableName: "rentalReservationDB",
@@ -166,7 +111,8 @@ exports.createRental = function (req, res) {
             price: req.body.price,
             startdate: req.body.startdate,
             enddate: req.body.enddate,
-            hours: req.body.hours
+            hours: req.body.hours,
+            status: req.body.status
         }
     };
     docClient.put(params, (err, data) => {
@@ -206,19 +152,32 @@ exports.updateRental = function (req, res) {
 }
 
 exports.deleteRental = function (req, res) {
-    var params = {
-        TableName: "rentalReservationDB",
-        Key: {
-            rentalId: req.body.id
-        }
-    };
-    docClient.delete(params, (err, data) => {
-        if (err) {
-            return err;
-        }
-        else {
-            return data;
-        }
-    });
+    console.log(req.body.Id);
+    var acceptedDate = new Date(req.body.startdate);
+    acceptedDate.setHours(acceptedDate.getHours() + 1);
+    var id = req.body.Id;
+    if (acceptedDate <= (new Date())) {
+        console.log("I AM HERE");
+        var params = {
+            TableName: "rentalReservationDB",
+            Key: {
+                id: id,
+                userID: "12345"
+            }
+        };
+        docClient.delete(params, (err, data) => {
+            if (err) {
+                console.log("error is" + err);
+                return err;
+            }
+            else {
+                res.redirect('/history');
+                return data;
+            }
+        });
+    }
+    else {
+        res.redirect('/history');
+    }
 
 }

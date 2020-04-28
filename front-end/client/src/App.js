@@ -12,15 +12,20 @@ import CheckOutPage from "./pages/CheckOutPage"
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App(props) {
+
+
   return (
     <Router>
       <div>
-        <PrivateRoute path="/admin" component={Admin} />
-        <Route exact path="/checkout" component={CheckOutPage} />
+        <PrivateRoute path="/admin" component={Admin}>
+
+        </ PrivateRoute>
+
         <Route exact path="/" component={Login} />
         <Route exact path="/signup" component={Signup} />
         <Route exact path="/userinfo" component={UserInfo} />
         <Route exact path="/changeuser" component={ChangeUserData} />
+        <Route exact path="/checkout" component={CheckOutPage} />
       </div>
     </Router>
   );

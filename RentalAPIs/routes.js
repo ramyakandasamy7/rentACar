@@ -13,11 +13,11 @@ module.exports = function (app) {
     app.route("/inrange").post(controller.inRange);
     app.route("/")
         .get(controller.showhome);
-    app.route("/history")
-        .get(controller.showhistory);
+    app.route("/history/:id")
+        .get(controller.getRental);
     app.route("/cancelReservation")
-        .post(controller.cancelReservation);
-        app.route("/returnVehicle")
+        .post(controller.deleteRental);
+    app.route("/returnVehicle")
         .post(controller.returnVehicle);
     app.route("/rental")
         .get(controller.getRental);

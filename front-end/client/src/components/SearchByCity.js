@@ -1,7 +1,6 @@
-import React, { Component, Fragment, useState } from "react";
-import { MDBDataTable, Row, Col, Card, CardBody, Button, Container } from 'mdbreact';
+import React, { Component } from "react";
+import { MDBDataTable, Col, Button, Container } from 'mdbreact';
 import axios from "axios";
-import { Collapse } from "@material-ui/core";
 import { Link } from "react-router-dom"
 
 export default class SearchByCity extends Component {
@@ -19,9 +18,8 @@ export default class SearchByCity extends Component {
     this.showCars = this.showCars.bind(this);
   }
   showCars = (e) => {
-    alert(`button index selected is ${this.state.Locations[e].ID}`);
     axios
-      .post("http://localhost:9000/getlocationID", {
+      .post("http://34.239.128.242:9000/getlocationID", {
         ID: this.state.Locations[e].ID,
       })
       .then((result) => {
@@ -56,19 +54,19 @@ export default class SearchByCity extends Component {
   assembleCars(e) {
     let cars = this.state.Cars.map((car) => {
       var price;
-      if (car.type == "Sedan") {
+      if (car.type === "Sedan") {
         price = this.state.Locations[this.state.selectedLocation].sedanPPH;
       }
       else if (car.type == "Luxury") {
         price = this.state.Locations[this.state.selectedLocation].luxuryPPH;
       }
-      else if (car.type == "Suv") {
+      else if (car.type === "Suv") {
         price = this.state.Locations[this.state.selectedLocation].suvPPH;
       }
-      else if (car.type == "Compact") {
+      else if (car.type === "Compact") {
         price = this.state.Locations[this.state.selectedLocation].compactPPH;
       }
-      else if (car.type == "Truck") {
+      else if (car.type === "Truck") {
         price = this.state.Locations[this.state.selectedLocation].truckPPH;
       }
       return (
@@ -86,7 +84,7 @@ export default class SearchByCity extends Component {
   }
   componentDidMount() {
     axios
-      .get("http://localhost:5000/locations")
+      .get("http://34.239.128.242:5000/locations")
       .then((result) => {
         if (result.status === 200) {
           console.log("LALALALALA" + result.data);

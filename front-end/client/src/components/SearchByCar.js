@@ -1,5 +1,4 @@
-import React, { Component, Fragment, useState } from "react";
-import { Form, Button, Nav, Table } from "react-bootstrap";
+import React, { Component } from "react";
 import { Container, Col, MDBDataTable } from "mdbreact"
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -11,7 +10,7 @@ export default class SearchByCar extends Component {
   }
   componentDidMount() {
     axios
-      .get("http://localhost:9000/")
+      .get("http://34.239.128.242:9000/")
       .then((result) => {
         if (result.status === 200) {
           console.log(result.data[0]);
@@ -30,8 +29,6 @@ export default class SearchByCar extends Component {
   }
 
   assembleCars(e) {
-    var price = 0;
-    var location = "howdy hey";
     let cars = this.state.Cars.map((car) => {
       return (
         {

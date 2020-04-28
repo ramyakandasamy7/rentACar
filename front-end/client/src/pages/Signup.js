@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 //import React, { useState, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
-import { authContext } from "../context/auth";
 import axios from "axios";
 
 function Signup({ history }) {
@@ -14,7 +12,7 @@ function Signup({ history }) {
   const onFormSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:4000/signup", {
+      .post("http://34.239.128.242:4000/signup", {
         email,
         password,
         driverslicense,

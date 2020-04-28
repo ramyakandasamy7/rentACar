@@ -11,7 +11,6 @@ const SignIn = ({ history }) => {
   const onFormSubmit = (e) => {
     e.preventDefault();
     console.log(email);
-    alert(password);
     console.log(password);
     axios
       .post("http://localhost:4000/login", {
@@ -37,8 +36,10 @@ const SignIn = ({ history }) => {
         style={{ height: "100vh" }}
         className="d-flex justify-content-center align-items-center"
       >
-        <div style={{ width: 300 }}>
-          <h1 className="text-center">Sign in</h1>
+
+
+        <div style={{ width: 500 }}>
+          <h1 className="text-center"> Customer Sign In</h1>
           <Form onSubmit={onFormSubmit}>
             <Form.Group>
               <Form.Label>Email address</Form.Label>
@@ -61,10 +62,14 @@ const SignIn = ({ history }) => {
                 }}
               />
             </Form.Group>
-            <Button variant="primary" type="submit" className="w-100 mt-3">
-              Sign in
+            <div style={{ textAlign: "center" }}>
+              <Button variant="primary" type="submit" style={{ width: 250, height: 40 }}>
+                Sign In
             </Button>
-            <Link to="/signup">Don't have an account?</Link>
+              <Link to="/signup" class="btn btn-success" style={{ width: 250, height: 40 }} >Don't have an account?</Link>
+            </div>
+            <a href="https://rentacar.ramyasmsseproject.com/login/" className="text-center" style={{ fontSize: 20, color: "white" }}  > Click for Management Login</a>
+
           </Form>
         </div>
       </div>

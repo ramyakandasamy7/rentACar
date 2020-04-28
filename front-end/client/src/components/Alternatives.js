@@ -1,12 +1,8 @@
-import React, { useContext, useState, useEffect, Component } from 'react';
-import DatePicker from "react-datepicker";
-import { Button } from "react-bootstrap"
+import React, { Component } from 'react';
 import axios from "axios"
 //import authContext from "../context/auth";
 import "react-datepicker/dist/react-datepicker.css";
-import { authContext } from "../context/auth";
-import NavBarLoggedIn from "../components/NavBarLoggedIn"
-import { MDBTable, MDBTableBody, MDBTableHead, Container, MDBDataTable, Col } from 'mdbreact';
+import { Container, MDBDataTable, Col } from 'mdbreact';
 import { Modal } from "react-bootstrap"
 import { Link } from "react-router-dom";
 class Alternatives extends Component {
@@ -21,13 +17,13 @@ class Alternatives extends Component {
     }
 
     componentDidMount() {
-        axios.post("http://localhost:9000/getbytype", { type: this.props.hello }).then((result) => {
+        axios.post("http://34.239.128.242:9000/getbytype", { type: this.props.hello }).then((result) => {
             console.log(result.data)
             const Cars = result.data.Items
 
             Cars.map((car) => {
                 console.log("HERE! " + car.make);
-                axios.post("http://localhost:7000/inrange", {
+                axios.post("http://34.239.128.242:7000/inrange", {
                     startdate: this.props.startdate,
                     enddate: this.props.enddate,
                     carID: car.ID
@@ -108,7 +104,7 @@ class Alternatives extends Component {
             <div >
                 <Modal show={this.state.show}>
                     <Modal.Header>
-                        <Modal.Title>Modal heading</Modal.Title>
+                        <Modal.Title>Similar Cars</Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
                         <p style={{ fontSize: 20, color: "#4a54f1", textAlign: "left", paddingTop: "0px" }}> Search by Car </p>

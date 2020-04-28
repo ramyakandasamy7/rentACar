@@ -184,4 +184,5 @@ carRouter.post("/getbytype", (req, res) => {
     }
   });
 });
+
 module.exports = carRouter;

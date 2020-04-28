@@ -2,8 +2,6 @@ import React, { useContext, useState } from "react";
 import NavBarLoggedIn from "../components/NavBarLoggedIn";
 import SearchByCity from "../components/SearchByCity";
 import SearchbyCar from "../components/SearchByCar";
-import { Button } from "react-bootstrap";
-import { auth } from "../context/auth.js";
 import { authContext } from "../context/auth";
 
 function Admin({ history }) {
