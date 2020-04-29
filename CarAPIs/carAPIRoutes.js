@@ -164,6 +164,7 @@ carRouter.post("/getlocationID", (req, res) => {
 
 carRouter.post("/getbytype", (req, res) => {
   var type = req.body.type;
+  console.log("in car Router" + req.body.type)
   var params = {
     TableName: "carInventoryDB",
     FilterExpression: "#typeofCar = :type",

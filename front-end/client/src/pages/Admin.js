@@ -3,6 +3,7 @@ import NavBarLoggedIn from "../components/NavBarLoggedIn";
 import SearchByCity from "../components/SearchByCity";
 import SearchbyCar from "../components/SearchByCar";
 import { authContext } from "../context/auth";
+import { Redirect } from "react-router-dom"
 
 function Admin({ history }) {
   const [searchCar, setSearchbyCar] = useState(false);
@@ -34,10 +35,8 @@ function Admin({ history }) {
     );
   } else {
     return (
-      <div>
-        <h1> You must log in first</h1>
-        <a href="/"> Login Page </a>
-      </div>
+      <Redirect to={{ pathname: "/" }}
+      />
     );
   }
 }
