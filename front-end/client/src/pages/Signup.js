@@ -2,13 +2,23 @@ import React, { useState } from "react";
 //import React, { useState, useContext } from "react";
 import { Form, Button } from "react-bootstrap";
 import axios from "axios";
+import validator from 'validator';
 
 function Signup({ history }) {
-  const [email, setEmail] = useState();
-  const [password, setPassword] = useState();
-  const [driverslicense, setLicense] = useState();
-  const [address, setAddress] = useState();
-  const [paymentinformation, setCard] = useState();
+  const [email, setEmail] = useState({ value: '', isValid: true, message: '' });
+  const [password, setPassword] = useState({ value: '', isValid: true, message: '' });
+  const [driverslicense, setLicense] = useState({ value: '', isValid: true, message: '' });
+  const [address, setAddress] = useState({ value: '', isValid: true, message: '' });
+  const [paymentinformation, setCard] = useState({ value: '', isValid: true, message: '' });
+  const formIsValid = () => {
+    let isGood = true;
+    if (!validator.isEmail(email.value)) {
+      email.isValid = false;
+      email.message = 'Not a valid email address';
+      isGood = false;
+    }
+    return isGood;
+  }
   const onFormSubmit = (e) => {
     e.preventDefault();
     axios
@@ -51,6 +61,7 @@ function Signup({ history }) {
                   setEmail(e.target.value);
                 }}
               />
+              <span className="help-block">{email.message}</span>
             </Form.Group>
 
             <Form.Group>

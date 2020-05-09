@@ -19,7 +19,7 @@ export default class SearchByCity extends Component {
   }
   showCars = (e) => {
     axios
-      .post("http://34.239.128.242:9000/getlocationID", {
+      .post("http://localhost:9000/getlocationID", {
         ID: this.state.Locations[e].ID,
       })
       .then((result) => {

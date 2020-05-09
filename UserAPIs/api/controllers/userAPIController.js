@@ -48,16 +48,18 @@ exports.get_user = function (req, res) {
 
 exports.signup = function (req, res) {
   var userID = Math.random().toString(36).substr(2, 9);
-
+  console.log("email is " + req.body.email);
+  console.log("credit card number is" + req.body.paymentinformation);
   var params = {
     TableName: "carRentalUsers",
     Item: {
       ID: userID,
       address: req.body.address,
-      username: req.body.username,
+      username: req.body.email,
       password: req.body.password,
-      license: req.body.license,
-      payment: req.body.payment,
+      driverslicense: req.body.driverslicense,
+      paymentinformation: req.body.paymentinformation,
+      membershipstatus: "valid"
     },
   };
   docClient.put(params, function (err, data) {

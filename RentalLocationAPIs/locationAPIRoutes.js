@@ -6,9 +6,7 @@ rentalRouter.use(bodyParser.json());
 rentalRouter.use(bodyParser.urlencoded({ extended: true }));
 let awsConfig = {
   region: "us-east-1",
-  endpoint: "http://dynamodb.us-east-1.amazonaws.com",
-  accessKeyId: "AKIAJR7XNR2MZH2QAPZQ",
-  secretAccessKey: "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",
+  endpoint: "http://dynamodb.us-east-1.amazonaws.com"
 };
 AWS.config.update(awsConfig);
 let docClient = new AWS.DynamoDB.DocumentClient();
@@ -18,6 +16,7 @@ rentalRouter.get("/locations", (req, res) => {
     TableName: "rentalLocationDB",
   };
   var requests = [];
+  console.log("HOLY TOLEDO")
   docClient.scan(params, (err, data) => {
     data.Items.forEach(function (item) {
       console.log(item);

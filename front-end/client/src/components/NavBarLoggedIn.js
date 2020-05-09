@@ -7,7 +7,7 @@ function NavBarLoggedIn({ history }) {
   const onLogOut = () => {
     setAuthData(null);
   };
-  var myLink = "http://localhost:7000/history/" + auth.data.Items[0].ID
+  var myLink = "http://34:7000/history/" + auth.data.Items[0].ID
   if (auth.data != null) {
     return (
       <Navbar bg="light" expand="lg">
